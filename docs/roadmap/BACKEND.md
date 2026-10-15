@@ -15,7 +15,7 @@
 |---|---|---|---|---|
 | BE-0 | Backend docs | 1 | 5 | 0 |
 | BOOT | Repo bootstrap (on `main`, before split) | 1 | 12 | 10 |
-| BE-1 | Contract sprint | 2 | 14 | 0 |
+| BE-1 | Contract sprint | 2 | 14 | 13 |
 | BE-2 | Database & seed | 2–3 | 9 | 1 |
 | BE-3 | Auth & roles | 3 | 7 | 1 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **12** |
+| | **Total** | | **109** | **25** |
 
 ---
 
@@ -70,20 +70,20 @@
 
 | ID | Task | Pri | Done when | Status |
 |---|---|---|---|---|
-| BE-1.1 | C-00 `contracts/common.ts` | P0 | Exported and documented | ⬜ |
-| BE-1.2 | C-01 `contracts/auth.ts` | P0 | 〃 | ⬜ |
-| BE-1.3 | C-02 `contracts/curriculum.ts` | P0 | 〃 | ⬜ |
-| BE-1.4 | C-03 `contracts/resources.ts` | P0 | 〃 | ⬜ |
-| BE-1.5 | C-04 `contracts/notes.ts` | P0 | 〃 | ⬜ |
-| BE-1.6 | C-05 `contracts/progress.ts` + C-06 `contracts/graph.ts` | P0 | 〃 | ⬜ |
-| BE-1.7 | C-07 `contracts/ai.ts` | P0 | 〃 | ⬜ |
-| BE-1.8 | C-08 `contracts/assignments.ts` | P0 | 〃 | ⬜ |
-| BE-1.9 | C-09 `contracts/dashboard.ts` + C-10 `contracts/notifications.ts` | P0 | 〃 | ⬜ |
-| BE-1.10 | C-11 `NodusGateway` interface complete | P0 | Mock + real stubs must implement it | ⬜ |
-| BE-1.11 | Server action stubs in `lib/actions/*` for every mutation (validate with Zod → call `getGateway()`) | P0 | FE can import every action | ⬜ |
-| BE-1.12 | API route stubs (`app/api/ai/tutor`, `app/api/upload`, `app/api/cron/reminders`) returning mock stream/data when flagged | P0 | Routes respond in mock mode | ⬜ |
-| BE-1.13 | `docs/api_contract.md` generated/written from contracts | P0 | Every function + action + route listed | ⬜ |
-| BE-1.14 | FE review done → merge `contract/v1` → tag `contracts-v1` | P0 | FE approved | ⬜ |
+| BE-1.1 | C-00 `contracts/common.ts` | P0 | Exported and documented | ✅ |
+| BE-1.2 | C-01 `contracts/auth.ts` | P0 | 〃 | ✅ |
+| BE-1.3 | C-02 `contracts/curriculum.ts` | P0 | 〃 | ✅ |
+| BE-1.4 | C-03 `contracts/resources.ts` | P0 | 〃 | ✅ |
+| BE-1.5 | C-04 `contracts/notes.ts` | P0 | 〃 | ✅ |
+| BE-1.6 | C-05 `contracts/progress.ts` + C-06 `contracts/graph.ts` | P0 | 〃 | ✅ |
+| BE-1.7 | C-07 `contracts/ai.ts` | P0 | 〃 | ✅ |
+| BE-1.8 | C-08 `contracts/assignments.ts` | P0 | 〃 | ✅ |
+| BE-1.9 | C-09 `contracts/dashboard.ts` + C-10 `contracts/notifications.ts` | P0 | 〃 | ✅ |
+| BE-1.10 | C-11 `NodusGateway` interface complete | P0 | Mock + real stubs must implement it | ✅ |
+| BE-1.11 | Server action stubs in `lib/actions/*` for every mutation (validate with Zod → call `getGateway()`) | P0 | FE can import every action | ✅ |
+| BE-1.12 | API route stubs (`app/api/ai/tutor`, `app/api/upload`, `app/api/cron/reminders`) returning mock stream/data when flagged | P0 | Routes respond in mock mode | ✅ |
+| BE-1.13 | `docs/api_contract.md` generated/written from contracts | P0 | Every function + action + route listed | ✅ |
+| BE-1.14 | FE review done → merge `contract/v1` → tag `contracts-v1` | P0 | FE approved | 🟡 PR `contract/v1` open — waiting for FE review |
 
 ---
 
@@ -248,4 +248,6 @@
 
 | Date | Request | Status |
 |---|---|---|
-| | | |
+| 2026-10-15 | **Review contracts v1** (`contracts/*`, `docs/api_contract.md`) on PR `contract/v1` — FE-1.7 | Open |
+| 2026-10-15 | `mocks/gateway.ts` and `mocks/ai-tutor.ts` were given **placeholders** by BE so `main` compiles (every mock method throws NOT_IMPLEMENTED). They are FE-owned — replace with real mocks in FE-1.10 / FE-1.11 | Open |
+| 2026-10-15 | ESLint now allows FE to import `@/lib/auth/client` (sign-in/up/out); everything else in `lib/auth` stays blocked | Info |

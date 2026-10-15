@@ -8,7 +8,11 @@ const backendOnly = [
   { group: ["@/lib/ai", "@/lib/ai/*"], message: "FE must not import AI internals. Use @/lib/gateway, @/lib/actions or /api routes." },
   { group: ["@/lib/progress", "@/lib/progress/*"], message: "FE must not import progress logic. Read progress from the gateway." },
   { group: ["@/lib/server-gateway", "@/lib/server-gateway/*"], message: "FE must use @/lib/gateway, never the real implementation directly." },
-  { group: ["@/lib/auth", "@/lib/auth/*"], message: "FE must not import auth internals. Use @/lib/actions or the gateway." },
+  {
+    // FE may use the browser auth client (sign-in / sign-up / sign-out) — nothing else in lib/auth.
+    regex: "^@/lib/auth(?!/client$)(/.*)?$",
+    message: "FE must not import auth internals. Use @/lib/auth/client, @/lib/actions or the gateway.",
+  },
 ];
 
 const eslintConfig = defineConfig([

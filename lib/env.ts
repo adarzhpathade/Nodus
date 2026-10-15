@@ -23,6 +23,8 @@ const schema = z.object({
   GOOGLE_GENERATIVE_AI_API_KEY: optional,
   GROQ_API_KEY: optional,
   // App
+  CRON_SECRET: optional,
+  HEALTHCHECK_SECRET: optional,
   MOCK_FEATURES: z.string().default(""),
   NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
 });
