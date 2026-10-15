@@ -66,10 +66,23 @@ Only one mono weight (Medium) exists — don't use `font-bold` on mono text. Fon
 - **Background grain:** a faint paper noise is applied globally (`body::before`). Don't add your own.
 - **Blueprint grid:** `bg-blueprint` for hero stages, the graph canvas and empty states.
 
-## 5. Signature details (what makes it feel like the reference)
+## 5. Page frame and rulers (the most recognisable trait)
 
-1. **Crosshair `+`** marks at the corners of hero stages and panels (12px, 1px strokes).
-2. **Ruler ticks** — a thin dotted tick strip along the stage edges.
+Every page is **one framed sheet**, like a drawing sheet on a board:
+
+1. **Outer frame:** a 1px `border-border` rectangle inset ~10px from the viewport on all four sides (`page-frame` utility on the root wrapper). Nothing sits outside it except the page background; the site-wide grain shows in the margin.
+2. **Section cells:** inside the frame, sections are separated by full-width 1px lines (nav row, hero stage, headline row, each section). Columns are separated by 1px verticals running the full height of their row (the 4-column cards in `head-desc-border.png`).
+3. **Ruler strips:** along the inside of the left and right edges of a hero/stage area runs a dotted vertical ruler (`ruler-y`), and along the top and bottom edges a horizontal one (`ruler-x`). They are tick marks every 8px, ink-grey, 10px wide.
+4. **Corner crosshairs:** a `+` (12px, 1px stroke) sits at each corner where two ruler strips meet, so a stage reads as a measured drawing area.
+5. **Guide lines:** thin vertical/horizontal lines (solid `border`, some dashed) cross a stage at construction points. One short orange line may mark the "active" guide (see the orange vertical line and the orange top line in `details.png`). On hover, a full-height 1px line follows the cursor with the coordinate tooltip.
+6. **Vertical edge lines in the footer:** the dashed vertical lines at the column boundaries continue up through the section above, so the grid feels continuous down the page.
+
+Use `<GridFrame>` (to be built in `components/layout/`) for the frame, and `<Stage>` for the ruler + crosshair area. Mobile: keep the outer frame and the section lines, drop the rulers to the top/bottom only, and stack columns.
+
+## 6. Signature details (what makes it feel like the reference)
+
+1. **Crosshair `+`** marks at the corners of hero stages and panels (12px, 1px strokes) — see section 5.
+2. **Ruler ticks** — dotted tick strips along stage edges (`ruler-x`, `ruler-y`).
 3. **Orange dot/square** (6–8px) as the single accent mark: active nav item, selected node, section eyebrow.
 4. **Coordinate tooltip** — dark mono box (`bg-foreground text-background text-label`) that follows the cursor on the graph/hero.
 5. **Numbered cards** — header row: mono title left, `[01]` muted right; dashed divider; illustration; headline; description.
@@ -78,7 +91,7 @@ Only one mono weight (Medium) exists — don't use `font-bold` on mono text. Fon
 8. **Line illustrations** — isometric, 1px stroke, `ink` for the hero object and `status-not-started` grey for secondary ones. Dashed construction lines.
 9. **Underlined links** — body-copy links are ink with a 1px underline; nav/CTA links are orange.
 
-## 6. Components
+## 7. Components
 
 Restyle shadcn primitives via tokens only (no per-component hex).
 
@@ -100,7 +113,7 @@ Restyle shadcn primitives via tokens only (no per-component hex).
 | **Empty state** | `bg-blueprint` area + thin isometric illustration + one-line mono caption |
 | **Progress ring / bar** | Ring or bar in the status color, 2px stroke, % in Bold mono-adjacent figure; track in `border` color |
 
-## 7. Pages (how each surface should look)
+## 8. Pages (how each surface should look)
 
 | Surface | Layout |
 |---|---|
@@ -116,7 +129,7 @@ Restyle shadcn primitives via tokens only (no per-component hex).
 | **Faculty pages** | Same system; class charts use `chart-*` with orange reserved for the highlighted series (like the radar in `stats.png`) |
 | **Footer (public pages)** | Link columns in bordered cells, giant outline wordmark, mono legal strip |
 
-## 8. Motion
+## 9. Motion
 
 Library split stays as in `AGENTS.md` section 11 (Motion for components, GSAP for scroll/timelines, Lenis for smooth scroll). Style notes for this theme:
 
@@ -129,7 +142,7 @@ Library split stays as in `AGENTS.md` section 11 (Motion for components, GSAP fo
 - **Cursor:** coordinate readout `X:644PX Y:90PX` on hero and graph canvas.
 - **Reduced motion:** all of the above collapse to instant state changes (already handled in `globals.css` and `components/motion/`).
 
-## 9. Do / Don't
+## 10. Do / Don't
 
 - **Do** keep everything on the grid, uppercase headlines, mono labels, one orange moment per view.
 - **Do** show % + icon + label with every status color.
@@ -137,10 +150,10 @@ Library split stays as in `AGENTS.md` section 11 (Motion for components, GSAP fo
 - **Don't** use orange for progress status.
 - **Don't** hardcode hex, font names or radii in components; extend `app/globals.css` instead.
 
-## 10. Implementation checklist for an FE agent
+## 11. Implementation checklist for an FE agent
 
 1. Read `app/globals.css` (tokens + `text-display`, `text-label`, `cell`, `divider-dashed`, `bg-blueprint`).
 2. Restyle `components/ui/*` first (button, badge, card, input, tabs, dialog, sheet, tooltip, skeleton) — token-only, radius 0, mono labels.
-3. Build shared pieces in `components/layout/`: `GridFrame`, `Crosshair`, `RulerTicks`, `SectionHeader` (eyebrow + display + description), `NumberedCard`, `CoordinateTooltip`, `Ticker`.
+3. Build shared pieces in `components/layout/`: `GridFrame` (outer page frame), `Stage` (rulers + crosshairs), `Crosshair`, `RulerTicks`, `SectionHeader` (eyebrow + display + description), `NumberedCard`, `CoordinateTooltip`, `Ticker`.
 4. Restyle the shells (student/faculty top nav as bordered cells) then pages in the order: landing, auth, dashboard, graph, subjects/unit, notes, tutor/practice, faculty pages.
 5. Verify: both themes, mobile (nav collapses, grid stacks to 1 column), keyboard focus (orange ring), reduced motion.

@@ -511,4 +511,24 @@
   border-radius: var(--radius-md);
   margin: 1rem 0;
   border: 1px solid var(--border);
+
+/* ===== Page frame + rulers (see docs/ui_design.md section 5) ===== */
+
+/* The whole site sits inside one thin frame, inset from the viewport edge.
+   Put on the root wrapper in the layout (inside <body>). */
+@utility page-frame {
+  margin: 10px;
+  min-height: calc(100dvh - 20px);
+  border: 1px solid var(--border);
+}
+
+/* Dotted ruler strips: thin tick marks along an edge. Apply to an empty, absolutely
+   positioned element (h-3 for -x, w-3 for -y). */
+@utility ruler-x {
+  background-image: repeating-linear-gradient(to right, var(--border) 0 1px, transparent 1px 8px);
+  height: 10px;
+}
+@utility ruler-y {
+  background-image: repeating-linear-gradient(to bottom, var(--border) 0 1px, transparent 1px 8px);
+  width: 10px;
 }
