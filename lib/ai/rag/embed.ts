@@ -21,9 +21,7 @@ export async function generateEmbeddings(
   }
 
   const google = createGoogleGenerativeAI({ apiKey: apiKey.trim() });
-  const model = google.textEmbeddingModel(EMBEDDING_MODEL_ID, {
-    outputDimensionality: EMBEDDING_DIMENSIONS,
-  });
+  const model = google.textEmbeddingModel(EMBEDDING_MODEL_ID);
 
   const allEmbeddings: number[][] = [];
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
@@ -31,6 +29,7 @@ export async function generateEmbeddings(
     const { embeddings } = await embedMany({
       model,
       values: batch,
+      providerOptions: { google: { outputDimensionality: EMBEDDING_DIMENSIONS } },
     });
     allEmbeddings.push(...embeddings);
   }
