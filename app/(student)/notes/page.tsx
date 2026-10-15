@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getGateway } from "@/lib/gateway";
 import { NotesExplorer } from "@/components/student/NotesExplorer";
 import type { SubjectWithUnitsAndTopics } from "@/components/student/CreateNoteDialog";
+import { PageBody } from "@/components/layout/PageBody";
 
 export const metadata: Metadata = {
   title: "My Notes | NODUS",
@@ -29,9 +30,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
 
   // Fetch subjects and their unit/topic structures
   const subjectsList = await gateway.curriculum.listSubjects(semesterNumber);
-  const subjectsWithDetails = await Promise.all(
-    subjectsList.map((s) => gateway.curriculum.getSubject(s.id))
-  );
+  const subjectsWithDetails = await Promise.all(subjectsList.map((s) => gateway.curriculum.getSubject(s.id)));
 
   const subjectsData: SubjectWithUnitsAndTopics[] = subjectsWithDetails.map((s) => ({
     id: s.id,
@@ -65,19 +64,21 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   });
 
   return (
-    <NotesExplorer
-      initialData={initialNotes}
-      subjects={subjectsData}
-      tags={tags}
-      semesterNumber={semesterNumber}
-      initialFilters={{
-        subjectId: params.subject,
-        unitId: params.unit,
-        topicId: params.topic,
-        tag: params.tag,
-        search: params.search,
-        sort: params.sort,
-      }}
-    />
+    <PageBody>
+      <NotesExplorer
+        initialData={initialNotes}
+        subjects={subjectsData}
+        tags={tags}
+        semesterNumber={semesterNumber}
+        initialFilters={{
+          subjectId: params.subject,
+          unitId: params.unit,
+          topicId: params.topic,
+          tag: params.tag,
+          search: params.search,
+          sort: params.sort,
+        }}
+      />
+    </PageBody>
   );
 }

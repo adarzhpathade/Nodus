@@ -6,6 +6,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { SubjectCard } from "@/components/student/SubjectCard";
 import type { ProgressStatus } from "@/contracts/common";
+import { PageBody } from "@/components/layout/PageBody";
 
 export const metadata: Metadata = {
   title: "Subjects | NODUS",
@@ -23,9 +24,7 @@ export default async function SubjectsPage() {
     gateway.graph.getStudentGraph(semesterNumber),
   ]);
 
-  const subjectDetails = await Promise.all(
-    subjects.map((s) => gateway.curriculum.getSubject(s.id))
-  );
+  const subjectDetails = await Promise.all(subjects.map((s) => gateway.curriculum.getSubject(s.id)));
 
   const subjectNodeMap = new Map<string, { percent: number; status: ProgressStatus }>();
   const unitNodeMap: Record<string, { percent: number; status: ProgressStatus }> = {};
@@ -49,28 +48,28 @@ export default async function SubjectsPage() {
   }
 
   // Calculate semester average
-  const avgPercent = subjects.length > 0
-    ? Math.round(
-        subjects.reduce((sum, s) => sum + (subjectNodeMap.get(s.id)?.percent ?? 0), 0) /
-          subjects.length
-      )
-    : 0;
+  const avgPercent =
+    subjects.length > 0
+      ? Math.round(
+          subjects.reduce((sum, s) => sum + (subjectNodeMap.get(s.id)?.percent ?? 0), 0) / subjects.length,
+        )
+      : 0;
 
   return (
-    <div className="space-y-6">
+    <PageBody className="space-y-6">
       <FadeIn direction="down" distance={12}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="space-y-1">
             <h1 className="font-heading text-2xl font-bold tracking-tight">
               Semester {semesterNumber} Subjects
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Explore your curriculum subjects, track unit completion, and dive into your notes.
             </p>
           </div>
-          <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-2 text-sm shadow-xs">
+          <div className="bg-card flex items-center gap-3 rounded-lg border px-4 py-2 text-sm shadow-xs">
             <span className="text-muted-foreground">Overall Semester Coverage:</span>
-            <span className="font-semibold text-foreground">{avgPercent}%</span>
+            <span className="text-foreground font-semibold">{avgPercent}%</span>
           </div>
         </div>
       </FadeIn>
@@ -102,6 +101,6 @@ export default async function SubjectsPage() {
           })}
         </Stagger>
       )}
-    </div>
+    </PageBody>
   );
 }

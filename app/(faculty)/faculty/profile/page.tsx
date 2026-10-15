@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getGateway } from "@/lib/gateway";
 import { ProfileCard } from "@/components/profile/ProfileCard";
+import { PageBody } from "@/components/layout/PageBody";
 
 export const metadata: Metadata = {
   title: "Faculty Profile | NODUS",
@@ -17,12 +18,12 @@ export default async function FacultyProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageBody className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold tracking-tight">Faculty Profile</h1>
-        <p className="text-sm text-muted-foreground">Manage your faculty details and preferences.</p>
+        <p className="text-muted-foreground text-sm">Manage your faculty details and preferences.</p>
       </div>
       <ProfileCard viewer={viewer} />
-    </div>
+    </PageBody>
   );
 }

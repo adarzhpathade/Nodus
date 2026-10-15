@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Award } from "lucide-react";
+import { PageBody } from "@/components/layout/PageBody";
+import { SectionHeader } from "@/components/layout/SectionHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
@@ -9,18 +11,19 @@ export const metadata: Metadata = {
 
 export default function PracticePage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">Practice</h1>
-        <p className="text-sm text-muted-foreground">
-          Take AI-generated quizzes grounded in faculty slides and notes to master topics.
-        </p>
-      </div>
-      <EmptyState
-        icon={Award}
-        title="Practice Quizzes"
-        description="Select a unit or topic to generate practice quizzes and track scores."
+    <>
+      <SectionHeader
+        eyebrow="[07] QUIZZES"
+        title="Practice"
+        description="Take AI-generated quizzes grounded in faculty slides and notes to master topics."
       />
-    </div>
+      <PageBody>
+        <EmptyState
+          icon={Award}
+          title="Practice Quizzes"
+          description="Select a unit or topic to generate practice quizzes and track scores."
+        />
+      </PageBody>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { getGateway } from "@/lib/gateway";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CurriculumManager } from "@/components/faculty/CurriculumManager";
 import type { Resource } from "@/contracts/resources";
+import { PageBody } from "@/components/layout/PageBody";
 
 export const metadata: Metadata = {
   title: "Curriculum Content | Faculty | NODUS",
@@ -24,11 +25,13 @@ export default async function FacultyContentPage() {
 
   if (teaches.length === 0) {
     return (
-      <EmptyState
-        icon={BookOpen}
-        title="No Subjects Assigned"
-        description="You do not have any teaching subjects assigned to your profile. Contact your department administrator."
-      />
+      <PageBody>
+        <EmptyState
+          icon={BookOpen}
+          title="No Subjects Assigned"
+          description="You do not have any teaching subjects assigned to your profile. Contact your department administrator."
+        />
+      </PageBody>
     );
   }
 
@@ -43,7 +46,7 @@ export default async function FacultyContentPage() {
   const subject = await gateway.curriculum.getSubject(activeSubjectId);
 
   const resourcesList = await Promise.all(
-    subject.units.map((u) => gateway.resources.listUnitResources(u.id))
+    subject.units.map((u) => gateway.resources.listUnitResources(u.id)),
   );
 
   const initialResourcesByUnit: Record<string, Resource[]> = {};
@@ -52,13 +55,13 @@ export default async function FacultyContentPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <PageBody className="space-y-6">
       <CurriculumManager
         key={subject.id}
         subject={subject}
         taughtSections={taughtSections}
         initialResourcesByUnit={initialResourcesByUnit}
       />
-    </div>
+    </PageBody>
   );
 }
