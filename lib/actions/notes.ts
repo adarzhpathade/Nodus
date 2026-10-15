@@ -11,11 +11,22 @@ import {
   UpdateNoteInput,
 } from "@/contracts/notes";
 import { getGateway } from "@/lib/gateway";
-import { runAction } from "./result";
+import { runAction, runQuery } from "./result";
 
 /** For client-side filtering / infinite scroll. Server components can call the gateway directly. */
 export async function listNotes(query: ListNotesQuery) {
   return runAction(ListNotesQuery, query, (data) => getGateway().notes.listNotes(data));
+}
+
+export async function getNote(input: NoteIdInput) {
+  return runAction(NoteIdInput, input, (data) => getGateway().notes.getNote(data.noteId));
+}
+
+export async function getBacklinks(input: NoteIdInput) {
+  return runAction(NoteIdInput, input, async (data) => {
+    const note = await getGateway().notes.getNote(data.noteId);
+    return note.backlinks;
+  });
 }
 
 export async function createNote(input: CreateNoteInput) {
@@ -35,8 +46,16 @@ export async function addNoteLink(input: AddLinkInput) {
   return runAction(AddLinkInput, input, (data) => getGateway().notes.addLink(data));
 }
 
+export async function addLink(input: AddLinkInput) {
+  return addNoteLink(input);
+}
+
 export async function removeNoteLink(input: RemoveLinkInput) {
   return runAction(RemoveLinkInput, input, (data) => getGateway().notes.removeLink(data));
+}
+
+export async function removeLink(input: RemoveLinkInput) {
+  return removeNoteLink(input);
 }
 
 /** Hover preview on links in the editor. */
@@ -51,4 +70,12 @@ export async function quickSearch(input: QuickSearchInput) {
 
 export async function exportNoteMarkdown(input: NoteIdInput) {
   return runAction(NoteIdInput, input, (data) => getGateway().notes.exportMarkdown(data));
+}
+
+export async function exportMarkdown(input: NoteIdInput) {
+  return exportNoteMarkdown(input);
+}
+
+export async function listTags() {
+  return runQuery(() => getGateway().notes.listTags());
 }

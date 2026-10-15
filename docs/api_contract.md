@@ -215,6 +215,8 @@ sendMessage({ text }, { body: { conversationId, scope } });
 |---|---|---|
 | `auth` | ✅ all methods | BE-3 |
 | `curriculum` | ✅ all methods (reads + faculty edits) | BE-4 |
+| `resources` | ✅ all methods (reads, presigned URLs, upload, ingest) | BE-4 |
+| `notes` | ✅ all methods (CRUD, links, search, tags, quick search, export) | BE-5 |
 | everything else | ⏳ NOT_IMPLEMENTED — keep in `MOCK_FEATURES` | — |
 
 **Routing (`proxy.ts`, real auth only):** signed out → `/login` · student without profile → `/onboarding` · student on `/faculty/*` or `/onboarding` → `/dashboard` · faculty on student pages → `/faculty/dashboard` · signed in on `/login`/`/signup` → their home. Selections are stored in httpOnly cookies (`nodus_semester`, `nodus_faculty`).
