@@ -3,6 +3,7 @@ import { CheckCircle2, Circle, FileText, HelpCircle, Plus } from "lucide-react";
 import type { TopicProgress } from "@/contracts/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NewNoteButton } from "@/components/student/NewNoteButton";
 import { cn } from "@/lib/utils";
 
 interface TopicChecklistProps {
@@ -93,23 +94,32 @@ export function TopicChecklist({ topics, unitId }: TopicChecklistProps) {
 
               <div className="flex items-center gap-2 sm:shrink-0">
                 {hasNotes ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 gap-1.5 text-xs font-medium"
-                   render={<Link href={`/notes?topic=${topic.topicId}`} />}>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 gap-1.5 text-xs font-medium"
+                      render={<Link href={`/notes?topic=${topic.topicId}`} />}
+                    >
                       <FileText className="size-3.5" />
-                      <span>View Notes</span>
+                      <span>View ({topic.noteCount})</span>
                     </Button>
+                    <NewNoteButton
+                      topicId={topic.topicId}
+                      variant="ghost"
+                      size="icon-sm"
+                      className="size-8"
+                    >
+                      <Plus className="size-3.5" />
+                    </NewNoteButton>
+                  </div>
                 ) : (
-                  <Button
+                  <NewNoteButton
+                    topicId={topic.topicId}
                     variant="secondary"
                     size="sm"
                     className="h-8 gap-1.5 text-xs font-medium"
-                   render={<Link href={`/notes/new?topicId=${topic.topicId}`} />}>
-                      <Plus className="size-3.5" />
-                      <span>Add Note</span>
-                    </Button>
+                  />
                 )}
 
                 <Button

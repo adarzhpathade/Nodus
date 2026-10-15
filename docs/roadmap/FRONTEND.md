@@ -19,7 +19,7 @@
 | FE-1 | Foundation + mocks | 2 | 12 | 12 |
 | FE-3 | Auth & app shell | 3 | 9 | 8 |
 | FE-4 | Faculty content & unit page | 4 | 6 | 5 |
-| FE-5 | Notes | 5 | 10 | 0 |
+| FE-5 | Notes | 5 | 10 | 9 |
 | FE-6 | Graph View | 6–7 | 12 | 0 |
 | FE-7 | AI UI | 7–8 | 9 | 0 |
 | FE-8 | Assignments & notifications | 9 | 8 | 0 |
@@ -27,7 +27,7 @@
 | FE-10 | Design replication & motion polish | 10–11 | 12 | 0 |
 | FE-11 | Testing & demo | 11–12 | 7 | 0 |
 | FE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **101** | **25** |
+| | **Total** | | **101** | **34** |
 
 > FE starts after **BOOT** is merged to `main` (BE task BOOT-12).
 
@@ -107,15 +107,15 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| FE-5.1 | Notes list (filter by subject/unit/topic, tags, search) | P0 | FE-3.3 | Lists notes | ⬜ |
-| FE-5.2 | Create note under a topic (from list, unit page, graph panel) | P0 | FE-5.1 | Opens editor | ⬜ |
-| FE-5.3 | Tiptap editor (headings, lists, checklist, code, table, image) | P0 | FE-5.2 | Formatting works | ⬜ |
-| FE-5.4 | Debounced auto-save + "Saved" indicator | P0 | FE-5.3 | No save button needed | ⬜ |
-| FE-5.5 | Slash (`/`) menu | P0 | FE-5.3 | Inserts blocks | ⬜ |
-| FE-5.6 | Link picker (note / topic / unit, create new inline) | P0 | FE-5.3 | Saves links by ID | ⬜ |
-| FE-5.7 | Backlinks panel + hover preview | P0 | FE-5.6 | Shows backlinks; preview on hover | ⬜ |
-| FE-5.8 | Ctrl+K quick switcher | P1 | FE-5.1 | Jumps to note/unit/topic | ⬜ |
-| FE-5.9 | Export Markdown button | P1 | FE-5.3 | Downloads `.md` | ⬜ |
+| FE-5.1 | Notes list (filter by subject/unit/topic, tags, search) | P0 | FE-3.3 | Lists notes | ✅ |
+| FE-5.2 | Create note under a topic (from list, unit page, graph panel) | P0 | FE-5.1 | Opens editor | ✅ |
+| FE-5.3 | Tiptap editor (headings, lists, checklist, code, table, image) | P0 | FE-5.2 | Formatting works | ✅ |
+| FE-5.4 | Debounced auto-save + "Saved" indicator | P0 | FE-5.3 | No save button needed | ✅ |
+| FE-5.5 | Slash (`/`) menu | P0 | FE-5.3 | Inserts blocks | ✅ |
+| FE-5.6 | Link picker (note / topic / unit, create new inline) | P0 | FE-5.3 | Saves links by ID | ✅ |
+| FE-5.7 | Backlinks panel + hover preview | P0 | FE-5.6 | Shows backlinks; preview on hover | ✅ |
+| FE-5.8 | Ctrl+K quick switcher | P1 | FE-5.1 | Jumps to note/unit/topic | ✅ |
+| FE-5.9 | Export Markdown button | P1 | FE-5.3 | Downloads `.md` | ✅ |
 | FE-5.10 | **INT-3**: switch `notes` to real | P0 | BE-5.8 | Works with real data | ⬜ |
 
 ---
@@ -244,3 +244,4 @@
 | 2026-10-15 | FYI: `UpdateNoteInput.title` is `min(1)` — FE never sends an empty title (falls back to "Untitled note"). Subjects page will read per-subject % from `getStudentGraph` subject nodes, so no new method is needed. | Info |
 | 2026-10-15 | FYI: `mocks/gateway.ts` + `mocks/ai-tutor.ts` are now real mocks (FE-1.10/1.11). `mockTutorReply(question, scope)` keeps the same signature the tutor route calls; it answers as the mock demo student. | Info |
 | 2026-10-15 | **FE-3 Shells & Auth completed.** Created shells (student & faculty), route guards, top navigation without sidebars, onboarding, semester & subject/section switchers, ProfileCard, and route transitions. Please ensure Neon Auth session cookie and auth provider proxy are synced for SSR viewer resolution when switching from mocks to real in INT-1. | Info |
+| 2026-10-15 | **FE-5 Notes completed.** Implemented Notes list with debounced search, subject/unit/topic filters, tags, and pagination; Tiptap markdown editor with debounced auto-save (~1s, dirty-fields only), slash menu, link picker (`nodus://` URI scheme), backlinks panel, link hover preview, Ctrl+K quick switcher, and Markdown export. Ready for INT-3 (BE-5 real notes). | Info |
