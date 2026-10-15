@@ -25,7 +25,6 @@ export function Breadcrumbs() {
 
   if (segments.length === 0) return null;
 
-  let currentPath = "";
 
   return (
     <nav aria-label="Breadcrumb" className="flex items-center text-xs text-muted-foreground">
@@ -40,7 +39,7 @@ export function Breadcrumbs() {
         </li>
 
         {segments.map((segment, index) => {
-          currentPath += `/${segment}`;
+          const currentPath = `/${segments.slice(0, index + 1).join("/")}`;
           const isLast = index === segments.length - 1;
           const label = SEGMENT_LABELS[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
 
