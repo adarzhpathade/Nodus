@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { themeInitScript } from "@/components/layout/themeScript";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// BT Grotesk: headlines and body. Geist Mono: small uppercase labels.
+// Files live in app/fonts (source copy in design/fonts).
+const grotesk = localFont({
+  variable: "--font-grotesk",
+  display: "swap",
+  src: [
+    { path: "./fonts/BTGrotesk-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/BTGrotesk-Medium.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/BTGrotesk-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/BTGrotesk-Bold.woff2", weight: "700", style: "normal" },
+  ],
 });
 
-const geistMono = Geist_Mono({
+const mono = localFont({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
+  src: [{ path: "./fonts/GeistMono-Medium.woff2", weight: "500", style: "normal" }],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${grotesk.variable} ${mono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

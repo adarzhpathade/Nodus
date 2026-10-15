@@ -3,18 +3,18 @@
 @import "shadcn/tailwind.css";
 
 /*
- * NODUS design tokens (FE-1.1).
- * PLACEHOLDER values — neutral shadcn base + minimal status hues. They are replaced by the
- * provided design in FE-10.1. Components must only use these tokens (never raw hex / oklch).
+ * NODUS design tokens — "blueprint paper" theme (FE-10.1).
+ * Source: design/references/* (Heron AI + city-statistics infographic). Full guide: docs/ui_design.md.
+ * Colors are sampled from the references. Components must only use these tokens (never raw hex).
  */
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   /* ---- Fonts ---- */
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-grotesk);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-heading: var(--font-grotesk);
 
   /* ---- Core surfaces (shadcn) ---- */
   --color-background: var(--background);
@@ -35,6 +35,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-signal-foreground: var(--signal-foreground);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-hairline: var(--hairline);
 
   /* ---- Feedback ---- */
   --color-success: var(--success);
@@ -107,128 +112,147 @@
   }
 }
 
+/* ===== Light: blueprint paper ===== */
 :root {
-  --radius: 0.625rem;
+  --radius: 0rem; /* the reference is square everywhere: no rounded corners */
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --paper: #f5f5ef;
+  --ink: #282828;
+  --hairline: #d7d7d1;
 
-  --success: oklch(0.6 0.15 150);
-  --success-foreground: oklch(0.985 0 0);
-  --warning: oklch(0.75 0.15 75);
-  --warning-foreground: oklch(0.205 0 0);
-  --info: oklch(0.6 0.13 245);
-  --info-foreground: oklch(0.985 0 0);
+  --background: #f5f5ef;
+  --foreground: #282828;
+  --card: #f5f5ef;
+  --card-foreground: #282828;
+  --popover: #fafaf6;
+  --popover-foreground: #282828;
+  --primary: #282828;
+  --primary-foreground: #f5f5ef;
+  --secondary: #ecece6;
+  --secondary-foreground: #282828;
+  --muted: #ecece6;
+  --muted-foreground: #606060;
+  --accent: #ecece6;
+  --accent-foreground: #282828;
+  --destructive: #c23b22;
+  --border: #d7d7d1;
+  --input: #d7d7d1;
+  --ring: #f83400;
 
-  --status-not-started: oklch(0.8 0 0);
-  --status-low: oklch(0.63 0.2 25);
-  --status-in-progress: oklch(0.76 0.15 75);
-  --status-mastered: oklch(0.62 0.15 150);
+  /* Signal orange: links, active nav, arrows, the single accent dot/square */
+  --signal: #f83400;
+  --signal-foreground: #ffffff;
 
-  --heat-0: oklch(0.95 0 0);
-  --heat-1: oklch(0.88 0.06 150);
-  --heat-2: oklch(0.78 0.1 150);
-  --heat-3: oklch(0.66 0.14 150);
-  --heat-4: oklch(0.52 0.15 150);
+  --success: #2f9e7a;
+  --success-foreground: #ffffff;
+  --warning: #e0a100;
+  --warning-foreground: #282828;
+  --info: #282828;
+  --info-foreground: #f5f5ef;
 
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Progress status: always paired with a % and an icon/label (AGENTS.md section 15) */
+  --status-not-started: #b0b0a8;
+  --status-low: #c23b22;
+  --status-in-progress: #e0a100;
+  --status-mastered: #2f9e7a;
 
-  --graph-canvas: oklch(0.985 0 0);
-  --graph-edge: oklch(0.8 0 0);
-  --graph-edge-prerequisite: oklch(0.6 0 0);
+  --heat-0: #e6e6df;
+  --heat-1: #c4e6d8;
+  --heat-2: #92d1b8;
+  --heat-3: #5db993;
+  --heat-4: #2f9e7a;
 
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --chart-1: #282828;
+  --chart-2: #f83400;
+  --chart-3: #6cc4a4;
+  --chart-4: #b0b0a8;
+  --chart-5: #707070;
 
-  --shadow-card: 0 1px 2px oklch(0 0 0 / 6%), 0 1px 3px oklch(0 0 0 / 8%);
-  --shadow-pop: 0 10px 30px -10px oklch(0 0 0 / 25%), 0 4px 10px -6px oklch(0 0 0 / 15%);
+  --graph-canvas: #f5f5ef;
+  --graph-edge: #b0b0a8;
+  --graph-edge-prerequisite: #f83400;
+
+  --sidebar: #f5f5ef;
+  --sidebar-foreground: #282828;
+  --sidebar-primary: #282828;
+  --sidebar-primary-foreground: #f5f5ef;
+  --sidebar-accent: #ecece6;
+  --sidebar-accent-foreground: #282828;
+  --sidebar-border: #d7d7d1;
+  --sidebar-ring: #f83400;
+
+  /* Flat design: no soft shadows. Elevation = a hairline border. */
+  --shadow-card: none;
+  --shadow-pop: 0 0 0 1px #d7d7d1;
 }
 
+/* ===== Dark: ink paper ===== */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --paper: #161614;
+  --ink: #f5f5ef;
+  --hairline: #3a3a36;
 
-  --success: oklch(0.7 0.15 150);
-  --success-foreground: oklch(0.145 0 0);
-  --warning: oklch(0.8 0.14 75);
-  --warning-foreground: oklch(0.145 0 0);
-  --info: oklch(0.7 0.12 245);
-  --info-foreground: oklch(0.145 0 0);
+  --background: #161614;
+  --foreground: #f5f5ef;
+  --card: #161614;
+  --card-foreground: #f5f5ef;
+  --popover: #1c1c18;
+  --popover-foreground: #f5f5ef;
+  --primary: #f5f5ef;
+  --primary-foreground: #161614;
+  --secondary: #222220;
+  --secondary-foreground: #f5f5ef;
+  --muted: #222220;
+  --muted-foreground: #a8a8a0;
+  --accent: #222220;
+  --accent-foreground: #f5f5ef;
+  --destructive: #e5604a;
+  --border: #3a3a36;
+  --input: #3a3a36;
+  --ring: #ff4a1c;
 
-  --status-not-started: oklch(0.4 0 0);
-  --status-low: oklch(0.68 0.19 25);
-  --status-in-progress: oklch(0.8 0.14 75);
-  --status-mastered: oklch(0.7 0.15 150);
+  --signal: #ff4a1c;
+  --signal-foreground: #161614;
 
-  --heat-0: oklch(0.24 0 0);
-  --heat-1: oklch(0.35 0.06 150);
-  --heat-2: oklch(0.47 0.1 150);
-  --heat-3: oklch(0.6 0.13 150);
-  --heat-4: oklch(0.72 0.15 150);
+  --success: #6cc4a4;
+  --success-foreground: #161614;
+  --warning: #e8b531;
+  --warning-foreground: #161614;
+  --info: #f5f5ef;
+  --info-foreground: #161614;
 
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --status-not-started: #5a5a54;
+  --status-low: #e5604a;
+  --status-in-progress: #e8b531;
+  --status-mastered: #6cc4a4;
 
-  --graph-canvas: oklch(0.17 0 0);
-  --graph-edge: oklch(0.4 0 0);
-  --graph-edge-prerequisite: oklch(0.6 0 0);
+  --heat-0: #222220;
+  --heat-1: #254a3d;
+  --heat-2: #357a62;
+  --heat-3: #4fa585;
+  --heat-4: #6cc4a4;
 
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --chart-1: #f5f5ef;
+  --chart-2: #ff4a1c;
+  --chart-3: #6cc4a4;
+  --chart-4: #707070;
+  --chart-5: #b0b0a8;
 
-  --shadow-card: 0 1px 2px oklch(0 0 0 / 40%);
-  --shadow-pop: 0 10px 30px -10px oklch(0 0 0 / 60%);
+  --graph-canvas: #161614;
+  --graph-edge: #5a5a54;
+  --graph-edge-prerequisite: #ff4a1c;
+
+  --sidebar: #161614;
+  --sidebar-foreground: #f5f5ef;
+  --sidebar-primary: #f5f5ef;
+  --sidebar-primary-foreground: #161614;
+  --sidebar-accent: #222220;
+  --sidebar-accent-foreground: #f5f5ef;
+  --sidebar-border: #3a3a36;
+  --sidebar-ring: #ff4a1c;
+
+  --shadow-card: none;
+  --shadow-pop: 0 0 0 1px #3a3a36;
 }
 
 @layer base {
@@ -240,7 +264,66 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
+  /* Subtle paper grain from the reference. Pure SVG noise, fixed, non-interactive. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .dark body::before {
+    mix-blend-mode: screen;
+    opacity: 0.2;
+  }
+}
+
+/* ===== Typography utilities (see docs/ui_design.md section 3) ===== */
+
+/* Big uppercase grotesk headlines: "AN AI AGENT THAT WORKS INSIDE..." */
+@utility text-display {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+/* Small mono uppercase labels: nav items, "PROBLEMS", "[01]", footers */
+@utility text-label {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ===== Blueprint surface utilities ===== */
+
+/* 1px bordered cell used to build the page grid */
+@utility cell {
+  border: 1px solid var(--border);
+}
+
+/* Dashed inner divider */
+@utility divider-dashed {
+  border-top: 1px dashed var(--border);
+}
+
+/* Faint blueprint grid for graph / hero backgrounds */
+@utility bg-blueprint {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
 }
 
 /* Reduced motion (FE-1.6): CSS animations/transitions collapse to near-instant.
