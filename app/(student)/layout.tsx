@@ -3,6 +3,7 @@ import { getGateway } from "@/lib/gateway";
 import { StudentTopNav } from "@/components/layout/StudentTopNav";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { PageTransition } from "@/components/motion/PageTransition";
+import { QuickSwitcher } from "@/components/editor/QuickSwitcher";
 
 export default async function StudentLayout({
   children,
@@ -44,6 +45,7 @@ export default async function StudentLayout({
           <PageTransition>{children}</PageTransition>
         </div>
       </main>
+      <QuickSwitcher />
     </div>
   );
 }

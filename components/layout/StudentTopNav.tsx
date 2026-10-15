@@ -8,6 +8,7 @@ import type { Viewer } from "@/contracts/auth";
 import type { Semester } from "@/contracts/curriculum";
 import type { SemesterNumber } from "@/contracts/common";
 import { useAuthActions } from "@/hooks/useAuthActions";
+import { useQuickSwitcher } from "@/stores/useQuickSwitcher";
 import { SemesterSwitcher } from "./SemesterSwitcher";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,6 +51,7 @@ export function StudentTopNav({
 }: StudentTopNavProps) {
   const pathname = usePathname();
   const { signOut } = useAuthActions();
+  const openQuickSwitcher = useQuickSwitcher((s) => s.open);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -135,13 +137,13 @@ export function StudentTopNav({
 
           <button
             type="button"
-            disabled
+            onClick={openQuickSwitcher}
             aria-label="Search syllabus and notes (Ctrl+K)"
-            className="hidden sm:flex items-center gap-2 rounded-lg border border-input bg-muted/30 px-2 py-1 text-xs text-muted-foreground opacity-60 cursor-not-allowed"
+            className="hidden sm:flex items-center gap-2 rounded-lg border border-input bg-muted/40 px-2.5 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
           >
             <Search className="size-3.5" />
             <span>Search...</span>
-            <kbd className="pointer-events-none rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono">
+            <kbd className="pointer-events-none rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-mono">
               Ctrl K
             </kbd>
           </button>
