@@ -2,43 +2,84 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/*
+ * NODUS design tokens (FE-1.1).
+ * PLACEHOLDER values — neutral shadcn base + minimal status hues. They are replaced by the
+ * provided design in FE-10.1. Components must only use these tokens (never raw hex / oklch).
+ */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* ---- Fonts ---- */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+
+  /* ---- Core surfaces (shadcn) ---- */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* ---- Feedback ---- */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* ---- Progress status (AGENTS.md §6.7) — e.g. bg-status-mastered, text-status-low ---- */
+  --color-status-not-started: var(--status-not-started);
+  --color-status-low: var(--status-low);
+  --color-status-in-progress: var(--status-in-progress);
+  --color-status-mastered: var(--status-mastered);
+
+  /* ---- Activity heatmap scale (0 = no activity) ---- */
+  --color-heat-0: var(--heat-0);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
+
+  /* ---- Charts ---- */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* ---- Graph canvas ---- */
+  --color-graph-canvas: var(--graph-canvas);
+  --color-graph-edge: var(--graph-edge);
+  --color-graph-edge-prerequisite: var(--graph-edge-prerequisite);
+
+  /* ---- Sidebar ---- */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ---- Radii ---- */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,9 +87,29 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ---- Shadows ---- */
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+
+  /* ---- Motion (CSS side; JS values live in components/motion/tokens.ts) ---- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
 }
 
 :root {
+  --radius: 0.625rem;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -67,12 +128,35 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+
+  --success: oklch(0.6 0.15 150);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.75 0.15 75);
+  --warning-foreground: oklch(0.205 0 0);
+  --info: oklch(0.6 0.13 245);
+  --info-foreground: oklch(0.985 0 0);
+
+  --status-not-started: oklch(0.8 0 0);
+  --status-low: oklch(0.63 0.2 25);
+  --status-in-progress: oklch(0.76 0.15 75);
+  --status-mastered: oklch(0.62 0.15 150);
+
+  --heat-0: oklch(0.95 0 0);
+  --heat-1: oklch(0.88 0.06 150);
+  --heat-2: oklch(0.78 0.1 150);
+  --heat-3: oklch(0.66 0.14 150);
+  --heat-4: oklch(0.52 0.15 150);
+
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+
+  --graph-canvas: oklch(0.985 0 0);
+  --graph-edge: oklch(0.8 0 0);
+  --graph-edge-prerequisite: oklch(0.6 0 0);
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -81,6 +165,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 6%), 0 1px 3px oklch(0 0 0 / 8%);
+  --shadow-pop: 0 10px 30px -10px oklch(0 0 0 / 25%), 0 4px 10px -6px oklch(0 0 0 / 15%);
 }
 
 .dark {
@@ -102,11 +189,35 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+
+  --success: oklch(0.7 0.15 150);
+  --success-foreground: oklch(0.145 0 0);
+  --warning: oklch(0.8 0.14 75);
+  --warning-foreground: oklch(0.145 0 0);
+  --info: oklch(0.7 0.12 245);
+  --info-foreground: oklch(0.145 0 0);
+
+  --status-not-started: oklch(0.4 0 0);
+  --status-low: oklch(0.68 0.19 25);
+  --status-in-progress: oklch(0.8 0.14 75);
+  --status-mastered: oklch(0.7 0.15 150);
+
+  --heat-0: oklch(0.24 0 0);
+  --heat-1: oklch(0.35 0.06 150);
+  --heat-2: oklch(0.47 0.1 150);
+  --heat-3: oklch(0.6 0.13 150);
+  --heat-4: oklch(0.72 0.15 150);
+
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
+
+  --graph-canvas: oklch(0.17 0 0);
+  --graph-edge: oklch(0.4 0 0);
+  --graph-edge-prerequisite: oklch(0.6 0 0);
+
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -115,16 +226,32 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 40%);
+  --shadow-pop: 0 10px 30px -10px oklch(0 0 0 / 60%);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply font-sans;
+  }
   body {
     @apply bg-background text-foreground;
   }
-  html {
-    @apply font-sans;
+}
+
+/* Reduced motion (FE-1.6): CSS animations/transitions collapse to near-instant.
+   JS motion (Motion, GSAP, Lenis) checks the same media query — see components/motion/. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

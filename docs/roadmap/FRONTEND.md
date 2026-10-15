@@ -16,7 +16,7 @@
 | Phase | Name | Weeks | Tasks | Done |
 |---|---|---|---|---|
 | FE-0 | Frontend docs | 1 | 4 | 0 |
-| FE-1 | Foundation + mocks | 2 | 12 | 0 |
+| FE-1 | Foundation + mocks | 2 | 12 | 12 |
 | FE-3 | Auth & app shell | 3 | 9 | 0 |
 | FE-4 | Faculty content & unit page | 4 | 6 | 0 |
 | FE-5 | Notes | 5 | 10 | 0 |
@@ -27,7 +27,7 @@
 | FE-10 | Design replication & motion polish | 10–11 | 12 | 0 |
 | FE-11 | Testing & demo | 11–12 | 7 | 0 |
 | FE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **101** | **0** |
+| | **Total** | | **101** | **12** |
 
 > FE starts after **BOOT** is merged to `main` (BE task BOOT-12).
 
@@ -48,18 +48,29 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| FE-1.1 | Design tokens in `app/globals.css` → Tailwind theme (placeholder values) | P0 | BOOT | No hardcoded colors in components | ⬜ |
-| FE-1.2 | Base UI components (shadcn): Button, Card, Dialog, Sheet, Input, Dropdown, Tooltip, Tabs, Badge, Skeleton | P0 | BOOT | In `components/ui/` | ⬜ |
-| FE-1.3 | Motion tokens + wrappers: `FadeIn`, `Stagger`, `CountUp`, `PageTransition`, `MagneticButton` | P0 | BOOT | In `components/motion/` | ⬜ |
-| FE-1.4 | GSAP helper (`useGsapContext`) with cleanup | P0 | BOOT | Sample timeline cleans up | ⬜ |
-| FE-1.5 | Lenis hook synced with ScrollTrigger | P1 | FE-1.4 | Smooth scroll on test page | ⬜ |
-| FE-1.6 | Reduced-motion handling across wrappers | P0 | FE-1.3 | OS setting respected | ⬜ |
-| FE-1.7 | Review contracts v1 (BE-1.14) — request changes in BE's file | P0 | BE-1.x | Approved | ⬜ |
-| FE-1.8 | Mock fixtures: CSE, Sem 1–8, full Sem 3 (subjects, units, topics), students, faculty | P0 | FE-1.7 | `mocks/fixtures/*` typed by contracts | ⬜ |
-| FE-1.9 | Mock fixtures: notes, links, quiz attempts, assignments, 60 days activity, notifications | P0 | FE-1.8 | Typed by contracts | ⬜ |
-| FE-1.10 | `mocks/gateway.ts` implementing full `NodusGateway` (in-memory, mutations work during session) | P0 | FE-1.8, FE-1.9 | Type-checks against interface | ⬜ |
-| FE-1.11 | Mock AI responses (canned tutor answers with citations, sample quiz, analysis) | P0 | FE-1.10 | AI screens buildable offline | ⬜ |
-| FE-1.12 | Providers in `app/layout.tsx` (TanStack Query, theme, Lenis; auth provider when BE requests) | P0 | BOOT | App boots with providers | ⬜ |
+| FE-1.1 | Design tokens in `app/globals.css` → Tailwind theme (placeholder values) | P0 | BOOT | No hardcoded colors in components | ✅ |
+| FE-1.2 | Base UI components (shadcn): Button, Card, Dialog, Sheet, Input, Dropdown, Tooltip, Tabs, Badge, Skeleton | P0 | BOOT | In `components/ui/` | ✅ |
+| FE-1.3 | Motion tokens + wrappers: `FadeIn`, `Stagger`, `CountUp`, `PageTransition`, `MagneticButton` | P0 | BOOT | In `components/motion/` | ✅ |
+| FE-1.4 | GSAP helper (`useGsapContext`) with cleanup | P0 | BOOT | Sample timeline cleans up | ✅ |
+| FE-1.5 | Lenis hook synced with ScrollTrigger | P1 | FE-1.4 | Smooth scroll on test page | ✅ |
+| FE-1.6 | Reduced-motion handling across wrappers | P0 | FE-1.3 | OS setting respected | ✅ |
+| FE-1.7 | Review contracts v1 (BE-1.14) — request changes in BE's file | P0 | BE-1.x | Approved | ✅ Approved with requests (see below) |
+| FE-1.8 | Mock fixtures: CSE, Sem 1–8, full Sem 3 (subjects, units, topics), students, faculty | P0 | FE-1.7 | `mocks/fixtures/*` typed by contracts | ✅ |
+| FE-1.9 | Mock fixtures: notes, links, quiz attempts, assignments, 60 days activity, notifications | P0 | FE-1.8 | Typed by contracts | ✅ |
+| FE-1.10 | `mocks/gateway.ts` implementing full `NodusGateway` (in-memory, mutations work during session) | P0 | FE-1.8, FE-1.9 | Type-checks against interface | ✅ |
+| FE-1.11 | Mock AI responses (canned tutor answers with citations, sample quiz, analysis) | P0 | FE-1.10 | AI screens buildable offline | ✅ |
+| FE-1.12 | Providers in `app/layout.tsx` (TanStack Query, theme, Lenis; auth provider when BE requests) | P0 | BOOT | App boots with providers | ✅ |
+
+---
+
+### Mock mode notes (FE-1)
+
+- `mocks/store.ts` builds an in-memory world from `mocks/fixtures/*` on first use (kept on `globalThis`, so edits survive hot reload; restart the dev server to reset). Dates are relative to "today".
+- Pick the mock user with the `nodus-mock-role` cookie: `student` (default, Aarav Sharma, CSE Sem 3 · A), `faculty` (Dr. Meera Iyer), `new-student` (no profile → onboarding), `signed-out`.
+- `MOCK_LATENCY_MS` adds a delay to every call (to see skeletons). `MOCK_AI_ERROR=RATE_LIMITED` or `AI_UNAVAILABLE` forces AI errors (FE-7.9).
+- `mocks/progress.ts` mirrors the §6.6 formula **for fake data only** so the graph reacts to new notes/quizzes; the real formula stays in `lib/progress`.
+- Lenis is **opt-in** (`<SmoothScroll>` in a layout/page), not global — it fights the graph canvas, editor and inner scroll panels.
+- Dev playground for motion wrappers: `/motion-lab` (404 in production).
 
 ---
 
@@ -224,4 +235,11 @@
 
 | Date | Request | Status |
 |---|---|---|
-| | | |
+| 2026-10-15 | **FE-1.7 review of contracts v1: APPROVED** — OK to merge `contract/v1` and tag `contracts-v1`. Nothing blocks FE; the items below can go in a follow-up `contract/` PR. | Info |
+| 2026-10-15 | **C-04 note links in content (please decide before BE-5).** The editor writes links into `contentMd`, but the links table is only changed by `addLink`/`removeLink`, so deleting a link in the editor would leave a stale row (and stale backlinks). Proposal: export the href scheme from `contracts/notes.ts` (`nodus://note/<id>`, `nodus://topic/<id>`, `nodus://unit/<id>`, e.g. `noteLinkHref(target)` + `parseNoteLinkHref(href)`), and have `updateNote` re-derive the note's links from those hrefs whenever `contentMd` is sent. `addLink`/`removeLink` can stay for the link picker. FE mocks + fixtures already use this scheme. | Open |
+| 2026-10-15 | **C-04 images in notes.** §9.3 lists images in the editor, but storage is faculty-only and `contentMd` is capped at 200 000 chars (base64 images would blow it). FE plan for v1: images **by URL only**, no upload. Tell FE if you'd rather add a note-image upload route. | Open |
+| 2026-10-15 | **C-02 `Unit.title` convention.** Please confirm titles are stored *without* the "Unit 3 –" prefix (e.g. `"Graphs"`); FE renders `Unit {order} – {title}`. Mocks follow this; please make the seed (BE-2) match. | Open |
+| 2026-10-15 | **C-06 faculty hover cards** exist only for unit nodes. FE will show just label + % for the subject root and topic nodes in v1. Optional later: a subject variant (class average + bands). | Info |
+| 2026-10-15 | **`docs/api_contract.md`:** please state that sign-up always creates a *student* and faculty accounts come from the seed, so FE builds no role picker on `/signup`. | Open |
+| 2026-10-15 | FYI: `UpdateNoteInput.title` is `min(1)` — FE never sends an empty title (falls back to "Untitled note"). Subjects page will read per-subject % from `getStudentGraph` subject nodes, so no new method is needed. | Info |
+| 2026-10-15 | FYI: `mocks/gateway.ts` + `mocks/ai-tutor.ts` are now real mocks (FE-1.10/1.11). `mockTutorReply(question, scope)` keeps the same signature the tutor route calls; it answers as the mock demo student. | Info |
