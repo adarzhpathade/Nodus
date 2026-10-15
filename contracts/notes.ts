@@ -11,6 +11,27 @@ export const LinkTarget = z.discriminatedUnion("type", [
 ]);
 export type LinkTarget = z.infer<typeof LinkTarget>;
 
+/**
+ * Builds a portable in-app link href: "nodus://note/<id>", "nodus://topic/<id>", or "nodus://unit/<id>".
+ * Note: updateNote re-derives note_links rows from these hrefs when contentMd is sent.
+ */
+export function noteLinkHref(target: { type: "note" | "topic" | "unit"; id: string }): string {
+  return `nodus://${target.type}/${target.id}`;
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Parses a nodus:// link href into a LinkTarget, or null if not a valid nodus link. */
+export function parseNoteLinkHref(href: string): LinkTarget | null {
+  const match = /^nodus:\/\/(note|topic|unit)\/([^/?#]+)$/i.exec(href);
+  if (!match) return null;
+  const type = match[1].toLowerCase() as "note" | "topic" | "unit";
+  const id = match[2];
+  if (!UUID_RE.test(id)) return null;
+  return { type, id };
+}
+
+
 export const NoteLink = z.object({
   id: Id,
   fromNoteId: Id,

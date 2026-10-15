@@ -18,7 +18,7 @@
 | BE-1 | Contract sprint | 2 | 14 | 14 |
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 6 |
-| BE-4 | Curriculum, resources & ingestion | 4 | 9 | 0 |
+| BE-4 | Curriculum, resources & ingestion | 4 | 9 | 2 |
 | BE-5 | Notes | 5 | 8 | 0 |
 | BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
 | BE-7 | AI | 7–8 | 11 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **41** |
+| | **Total** | | **109** | **43** |
 
 ---
 
@@ -121,8 +121,8 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-4.1 | Faculty: units CRUD + reorder (own subjects only) | P0 | BE-3.2 | Matches C-02 | ⬜ |
-| BE-4.2 | Faculty: topics CRUD + reorder | P0 | BE-4.1 | Order respected everywhere | ⬜ |
+| BE-4.1 | Faculty: units CRUD + reorder (own subjects only) | P0 | BE-3.2 | Matches C-02 | ✅ |
+| BE-4.2 | Faculty: topics CRUD + reorder | P0 | BE-4.1 | Order respected everywhere | ✅ |
 | BE-4.3 | Storage bucket + `app/api/upload` (PDF/PPT/PPTX, size limit) | P0 | H-06 | File stored, `resources` row created | 🟡 Bucket + `lib/storage` client verified; upload route not built |
 | BE-4.4 | Section visibility filter on all resource queries | P0 | BE-4.3 | Students see only their sections | 🟡 Bucket + `lib/storage` client verified; upload route not built |
 | BE-4.5 | Text extraction per page/slide | P0 | BE-4.3 | Text + page number saved | 🟡 Bucket + `lib/storage` client verified; upload route not built |
@@ -251,3 +251,4 @@
 | 2026-10-15 | **Review contracts v1** (`contracts/*`, `docs/api_contract.md`) on PR `contract/v1` — FE-1.7 | Open |
 | 2026-10-15 | `mocks/gateway.ts` and `mocks/ai-tutor.ts` were given **placeholders** by BE so `main` compiles (every mock method throws NOT_IMPLEMENTED). They are FE-owned — replace with real mocks in FE-1.10 / FE-1.11 | Open |
 | 2026-10-15 | ESLint now allows FE to import `@/lib/auth/client` (sign-in/up/out); everything else in `lib/auth` stays blocked | Info |
+| 2026-10-15 | FE: update mocks/gateway.ts curriculum faculty methods to mirror NOT_FOUND / FORBIDDEN / VALIDATION / CONFLICT behaviour; noteLinkHref/parseNoteLinkHref now exported from contracts/notes.ts | Open |

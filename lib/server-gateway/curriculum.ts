@@ -2,15 +2,29 @@
 import "server-only";
 import { GatewayError } from "@/contracts/common";
 import type { CurriculumApi, Semester, Subject, Topic, Unit } from "@/contracts/curriculum";
-import { assertSemesterOpen, requireViewer, viewerBranchId } from "@/lib/auth/guards";
+import { assertSemesterOpen, requireFacultyTeaches, requireViewer, viewerBranchId } from "@/lib/auth/guards";
 import type { ViewerContext } from "@/lib/auth/viewer";
 import {
+  countNotesInTopic,
+  countNotesInUnit,
+  deleteTopic as deleteTopicRecord,
+  deleteUnit as deleteUnitRecord,
   findSubject,
+  findTopicById,
+  findUnitById,
   findUnitWithSubject,
+  insertTopic,
+  insertUnit,
   listPrerequisitesForSemester,
   listSemestersForBranch,
   listSubjectsForSemester,
+  listTopicIds,
+  listUnitIds,
   listUnitsWithTopics,
+  renameTopic as renameTopicRecord,
+  renameUnit as renameUnitRecord,
+  setTopicOrder,
+  setUnitOrder,
   type SubjectRecord,
 } from "@/lib/db/queries/curriculum";
 
@@ -34,6 +48,18 @@ const toTopic = (t: { id: string; unitId: string; title: string; order: number }
   order: t.order,
 });
 
+function validateOrderedIds(orderedIds: string[], currentIds: string[], childType: "units" | "topics"): void {
+  if (orderedIds.length !== currentIds.length || new Set(orderedIds).size !== currentIds.length) {
+    throw new GatewayError("VALIDATION", `Ordered IDs must contain all current ${childType} exactly once.`);
+  }
+  const currentSet = new Set(currentIds);
+  for (const id of orderedIds) {
+    if (!currentSet.has(id)) {
+      throw new GatewayError("VALIDATION", `Unknown ${childType.slice(0, -1)} ID: ${id}`);
+    }
+  }
+}
+
 /** Loads a subject the viewer may see: same branch, and not in a locked semester (students). */
 async function visibleSubject(viewer: ViewerContext, subjectId: string): Promise<SubjectRecord> {
   const subject = await findSubject(subjectId);
@@ -41,10 +67,6 @@ async function visibleSubject(viewer: ViewerContext, subjectId: string): Promise
   assertSemesterOpen(viewer, subject.semesterNumber);
   return subject;
 }
-
-const notYet = (task: string) => async (): Promise<never> => {
-  throw new GatewayError("NOT_IMPLEMENTED", `Faculty syllabus editing is not built yet (${task}). Add "curriculum" to MOCK_FEATURES.`);
-};
 
 export const curriculumApi: CurriculumApi = {
   async listSemesters(): Promise<Semester[]> {
@@ -87,12 +109,92 @@ export const curriculumApi: CurriculumApi = {
     return { subject: toSubject(found.subject), unit: toUnit(found.unit), topics: found.topics.map(toTopic) };
   },
 
-  createUnit: notYet("BE-4.1"),
-  renameUnit: notYet("BE-4.1"),
-  reorderUnits: notYet("BE-4.1"),
-  deleteUnit: notYet("BE-4.1"),
-  createTopic: notYet("BE-4.2"),
-  renameTopic: notYet("BE-4.2"),
-  reorderTopics: notYet("BE-4.2"),
-  deleteTopic: notYet("BE-4.2"),
+  async createUnit(input) {
+    const subject = await findSubject(input.subjectId);
+    if (!subject) throw new GatewayError("NOT_FOUND", "Subject not found.");
+    await requireFacultyTeaches(input.subjectId);
+
+    const created = await insertUnit(input.subjectId, input.title);
+    return toUnit(created);
+  },
+
+  async renameUnit(input) {
+    const unit = await findUnitById(input.unitId);
+    if (!unit) throw new GatewayError("NOT_FOUND", "Unit not found.");
+    await requireFacultyTeaches(unit.subjectId);
+
+    const updated = await renameUnitRecord(input.unitId, input.title);
+    if (!updated) throw new GatewayError("NOT_FOUND", "Unit not found.");
+    return toUnit(updated);
+  },
+
+  async reorderUnits(input) {
+    const subject = await findSubject(input.parentId);
+    if (!subject) throw new GatewayError("NOT_FOUND", "Subject not found.");
+    await requireFacultyTeaches(input.parentId);
+
+    const currentIds = await listUnitIds(input.parentId);
+    validateOrderedIds(input.orderedIds, currentIds, "units");
+
+    const reordered = await setUnitOrder(input.parentId, input.orderedIds);
+    return reordered.map(toUnit);
+  },
+
+  async deleteUnit(input) {
+    const unit = await findUnitById(input.unitId);
+    if (!unit) throw new GatewayError("NOT_FOUND", "Unit not found.");
+    await requireFacultyTeaches(unit.subjectId);
+
+    const notesCount = await countNotesInUnit(input.unitId);
+    if (notesCount > 0) {
+      throw new GatewayError("CONFLICT", "Students have notes here. Move or archive them first.");
+    }
+
+    await deleteUnitRecord(input.unitId);
+  },
+
+  async createTopic(input) {
+    const unit = await findUnitById(input.unitId);
+    if (!unit) throw new GatewayError("NOT_FOUND", "Unit not found.");
+    await requireFacultyTeaches(unit.subjectId);
+
+    const created = await insertTopic(input.unitId, input.title);
+    return toTopic(created);
+  },
+
+  async renameTopic(input) {
+    const topic = await findTopicById(input.topicId);
+    if (!topic) throw new GatewayError("NOT_FOUND", "Topic not found.");
+    await requireFacultyTeaches(topic.subjectId);
+
+    const updated = await renameTopicRecord(input.topicId, input.title);
+    if (!updated) throw new GatewayError("NOT_FOUND", "Topic not found.");
+    return toTopic(updated);
+  },
+
+  async reorderTopics(input) {
+    const unit = await findUnitById(input.parentId);
+    if (!unit) throw new GatewayError("NOT_FOUND", "Unit not found.");
+    await requireFacultyTeaches(unit.subjectId);
+
+    const currentIds = await listTopicIds(input.parentId);
+    validateOrderedIds(input.orderedIds, currentIds, "topics");
+
+    const reordered = await setTopicOrder(input.parentId, input.orderedIds);
+    return reordered.map(toTopic);
+  },
+
+  async deleteTopic(input) {
+    const topic = await findTopicById(input.topicId);
+    if (!topic) throw new GatewayError("NOT_FOUND", "Topic not found.");
+    await requireFacultyTeaches(topic.subjectId);
+
+    const notesCount = await countNotesInTopic(input.topicId);
+    if (notesCount > 0) {
+      throw new GatewayError("CONFLICT", "Students have notes here. Move or archive them first.");
+    }
+
+    await deleteTopicRecord(input.topicId);
+  },
 };
+

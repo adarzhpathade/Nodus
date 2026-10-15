@@ -43,9 +43,17 @@
 | `NOT_IMPLEMENTED` | 501 | Real backend not built yet | Dev only — add feature to `MOCK_FEATURES` |
 | `INTERNAL` | 500 | Unexpected | Generic error |
 
+### Decisions
+
+- **Note links derivation:** `updateNote` re-derives `note_links` rows from `nodus://(note|topic|unit)/<id>` hrefs in `contentMd` when saved.
+- **Note images:** Note images are URL-only in v1; there is no separate note image upload route.
+- **Unit titles:** `Unit.title` is stored without the `"Unit N - "` prefix (e.g. `"Graphs"`). The frontend renders `"Unit {order} - {title}"` (or 1-based display as appropriate).
+- **User registration:** Sign-up always creates a student user. Faculty accounts are provisioned exclusively via seed or admin.
+
 ---
 
 ## 2. Gateway by feature
+
 
 Feature flag names (for `MOCK_FEATURES`) are in brackets.
 
@@ -206,7 +214,7 @@ sendMessage({ text }, { body: { conversationId, scope } });
 | Feature | Real? | Since |
 |---|---|---|
 | `auth` | ✅ all methods | BE-3 |
-| `curriculum` | ✅ reads · ⏳ faculty edits (NOT_IMPLEMENTED until BE-4.1/4.2) | BE-3 |
+| `curriculum` | ✅ all methods (reads + faculty edits) | BE-4 |
 | everything else | ⏳ NOT_IMPLEMENTED — keep in `MOCK_FEATURES` | — |
 
 **Routing (`proxy.ts`, real auth only):** signed out → `/login` · student without profile → `/onboarding` · student on `/faculty/*` or `/onboarding` → `/dashboard` · faculty on student pages → `/faculty/dashboard` · signed in on `/login`/`/signup` → their home. Selections are stored in httpOnly cookies (`nodus_semester`, `nodus_faculty`).
