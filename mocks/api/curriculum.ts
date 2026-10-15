@@ -1,4 +1,16 @@
-import type { CurriculumApi, ReorderInput, Topic, Unit } from "@/contracts/curriculum";
+import { z } from "zod";
+import {
+  CreateTopicInput,
+  CreateUnitInput,
+  DeleteTopicInput,
+  DeleteUnitInput,
+  RenameTopicInput,
+  RenameUnitInput,
+  ReorderInput,
+  type CurriculumApi,
+  type Topic,
+  type Unit,
+} from "@/contracts/curriculum";
 import { assertTeaches, clone, fail, mockRequest, requireActor, requireFaculty, type Actor } from "../context";
 import { mockId } from "../fixtures/ids";
 import type { MockStore } from "../store";
@@ -16,6 +28,16 @@ function topicHasNotes(store: MockStore, topicId: string) {
   if (store.notes.some((n) => n.topicId === topicId)) return true;
   for (const classmate of store.classmates.values()) if ((classmate.noteCounts.get(topicId) ?? 0) > 0) return true;
   return false;
+}
+
+function validateInput<T>(schema: z.ZodType<T>, input: unknown): T {
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    const firstErrorMessage = parsed.error.issues[0]?.message ?? "Validation failed.";
+    throw fail("VALIDATION", firstErrorMessage, { fieldErrors: fieldErrors as Record<string, string[]> });
+  }
+  return parsed.data;
 }
 
 function applyOrder<T extends { id: string; order: number }>(children: T[], input: ReorderInput): T[] {
@@ -79,7 +101,8 @@ export const curriculumMock: CurriculumApi = {
     return clone({ subject, unit, topics: store.topics.filter((t) => t.unitId === unitId).sort(byOrder) });
   },
 
-  async createUnit(input) {
+  async createUnit(rawInput) {
+    const input = validateInput(CreateUnitInput, rawInput);
     const store = await mockRequest(150);
     const faculty = await requireFaculty(store);
     findSubject(store, input.subjectId);
@@ -95,21 +118,25 @@ export const curriculumMock: CurriculumApi = {
     return clone(unit);
   },
 
-  async renameUnit(input) {
+  async renameUnit(rawInput) {
+    const input = validateInput(RenameUnitInput, rawInput);
     const store = await mockRequest(150);
     const unit = await facultyForUnit(store, input.unitId);
     unit.title = input.title;
     return clone(unit);
   },
 
-  async reorderUnits(input) {
+  async reorderUnits(rawInput) {
+    const input = validateInput(ReorderInput, rawInput);
     const store = await mockRequest(150);
     const faculty = await requireFaculty(store);
+    findSubject(store, input.parentId);
     assertTeaches(faculty, input.parentId);
     return clone(applyOrder(store.units.filter((u) => u.subjectId === input.parentId), input));
   },
 
-  async deleteUnit(input) {
+  async deleteUnit(rawInput) {
+    const input = validateInput(DeleteUnitInput, rawInput);
     const store = await mockRequest(150);
     const unit = await facultyForUnit(store, input.unitId);
     const unitTopics = store.topics.filter((t) => t.unitId === unit.id);
@@ -121,7 +148,8 @@ export const curriculumMock: CurriculumApi = {
     store.units = store.units.filter((u) => u.id !== unit.id);
   },
 
-  async createTopic(input) {
+  async createTopic(rawInput) {
+    const input = validateInput(CreateTopicInput, rawInput);
     const store = await mockRequest(150);
     await facultyForUnit(store, input.unitId);
     const siblings = store.topics.filter((t) => t.unitId === input.unitId);
@@ -135,7 +163,8 @@ export const curriculumMock: CurriculumApi = {
     return clone(topic);
   },
 
-  async renameTopic(input) {
+  async renameTopic(rawInput) {
+    const input = validateInput(RenameTopicInput, rawInput);
     const store = await mockRequest(150);
     const topic = findTopic(store, input.topicId);
     await facultyForUnit(store, topic.unitId);
@@ -143,13 +172,15 @@ export const curriculumMock: CurriculumApi = {
     return clone(topic);
   },
 
-  async reorderTopics(input) {
+  async reorderTopics(rawInput) {
+    const input = validateInput(ReorderInput, rawInput);
     const store = await mockRequest(150);
     await facultyForUnit(store, input.parentId);
     return clone(applyOrder(store.topics.filter((t) => t.unitId === input.parentId), input));
   },
 
-  async deleteTopic(input) {
+  async deleteTopic(rawInput) {
+    const input = validateInput(DeleteTopicInput, rawInput);
     const store = await mockRequest(150);
     const topic = findTopic(store, input.topicId);
     await facultyForUnit(store, topic.unitId);

@@ -17,8 +17,8 @@
 |---|---|---|---|---|
 | FE-0 | Frontend docs | 1 | 4 | 0 |
 | FE-1 | Foundation + mocks | 2 | 12 | 12 |
-| FE-3 | Auth & app shell | 3 | 9 | 0 |
-| FE-4 | Faculty content & unit page | 4 | 6 | 0 |
+| FE-3 | Auth & app shell | 3 | 9 | 8 |
+| FE-4 | Faculty content & unit page | 4 | 6 | 5 |
 | FE-5 | Notes | 5 | 10 | 0 |
 | FE-6 | Graph View | 6–7 | 12 | 0 |
 | FE-7 | AI UI | 7–8 | 9 | 0 |
@@ -27,7 +27,7 @@
 | FE-10 | Design replication & motion polish | 10–11 | 12 | 0 |
 | FE-11 | Testing & demo | 11–12 | 7 | 0 |
 | FE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **101** | **12** |
+| | **Total** | | **101** | **25** |
 
 > FE starts after **BOOT** is merged to `main` (BE task BOOT-12).
 
@@ -78,14 +78,14 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| FE-3.1 | Login + signup pages | P0 | FE-1.2 | Calls auth actions | ⬜ |
-| FE-3.2 | Student onboarding (branch, semester, section) | P0 | FE-3.1 | Submits onboarding action | ⬜ |
-| FE-3.3 | Student shell: top nav (7 links + semester switcher, search, bell, profile), breadcrumbs, mobile menu — **no sidebar** | P0 | FE-1.2 | All student routes reachable (placeholders) | ⬜ |
-| FE-3.4 | Faculty shell: top nav (5 links + subject/section switcher, bell, profile), mobile menu — **no sidebar** | P0 | FE-1.2 | All faculty routes reachable | ⬜ |
-| FE-3.5 | Semester switcher (locked future semesters with lock icon) | P0 | FE-3.3 | Selection changes page data | ⬜ |
-| FE-3.6 | Subject + Section switcher (faculty) | P0 | FE-3.4 | Selection changes page data | ⬜ |
-| FE-3.7 | Route transitions for the shell | P1 | FE-1.3 | Shell stays, content transitions | ⬜ |
-| FE-3.8 | Profile page (info, theme, logout) | P1 | FE-3.3 | Works on mocks | ⬜ |
+| FE-3.1 | Login + signup pages | P0 | FE-1.2 | Calls auth actions | ✅ |
+| FE-3.2 | Student onboarding (branch, semester, section) | P0 | FE-3.1 | Submits onboarding action | ✅ |
+| FE-3.3 | Student shell: top nav (7 links + semester switcher, search, bell, profile), breadcrumbs, mobile menu — **no sidebar** | P0 | FE-1.2 | All student routes reachable (placeholders) | ✅ |
+| FE-3.4 | Faculty shell: top nav (5 links + subject/section switcher, bell, profile), mobile menu — **no sidebar** | P0 | FE-1.2 | All faculty routes reachable | ✅ |
+| FE-3.5 | Semester switcher (locked future semesters with lock icon) | P0 | FE-3.3 | Selection changes page data | ✅ |
+| FE-3.6 | Subject + Section switcher (faculty) | P0 | FE-3.4 | Selection changes page data | ✅ |
+| FE-3.7 | Route transitions for the shell | P1 | FE-1.3 | Shell stays, content transitions | ✅ |
+| FE-3.8 | Profile page (info, theme, logout) | P1 | FE-3.3 | Works on mocks | ✅ |
 | FE-3.9 | **INT-1**: switch `auth,curriculum` to real; fix UI issues | P0 | BE-3.7 | Works with real data | ⬜ |
 
 ---
@@ -94,11 +94,11 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| FE-4.1 | Faculty content page: subjects → units → topics tree | P0 | FE-3.4 | Lists own subjects | ⬜ |
-| FE-4.2 | Units + topics CRUD UI with drag-to-reorder | P0 | FE-4.1 | Calls actions; optimistic UI | ⬜ |
-| FE-4.3 | Upload UI (drag & drop, section visibility, ingestion status) | P0 | FE-4.1 | Upload flow complete on mocks | ⬜ |
-| FE-4.4 | Student subjects list page | P0 | FE-3.3 | Subjects for selected semester | ⬜ |
-| FE-4.5 | Student unit page (topics, resources, assignment slot, AI action buttons) | P0 | FE-4.4 | Resource open/download works | ⬜ |
+| FE-4.1 | Faculty content page: subjects → units → topics tree | P0 | FE-3.4 | Lists own subjects | ✅ |
+| FE-4.2 | Units + topics CRUD UI with drag-to-reorder | P0 | FE-4.1 | Calls actions; optimistic UI | ✅ |
+| FE-4.3 | Upload UI (drag & drop, section visibility, ingestion status) | P0 | FE-4.1 | Upload flow complete on mocks | ✅ |
+| FE-4.4 | Student subjects list page | P0 | FE-3.3 | Subjects for selected semester | ✅ |
+| FE-4.5 | Student unit page (topics, resources, assignment slot, AI action buttons) | P0 | FE-4.4 | Resource open/download works | ✅ |
 | FE-4.6 | **INT-2**: switch `resources` to real | P0 | BE-4.9 | Works with real data | ⬜ |
 
 ---
@@ -243,3 +243,4 @@
 | 2026-10-15 | **`docs/api_contract.md`:** please state that sign-up always creates a *student* and faculty accounts come from the seed, so FE builds no role picker on `/signup`. | Open |
 | 2026-10-15 | FYI: `UpdateNoteInput.title` is `min(1)` — FE never sends an empty title (falls back to "Untitled note"). Subjects page will read per-subject % from `getStudentGraph` subject nodes, so no new method is needed. | Info |
 | 2026-10-15 | FYI: `mocks/gateway.ts` + `mocks/ai-tutor.ts` are now real mocks (FE-1.10/1.11). `mockTutorReply(question, scope)` keeps the same signature the tutor route calls; it answers as the mock demo student. | Info |
+| 2026-10-15 | **FE-3 Shells & Auth completed.** Created shells (student & faculty), route guards, top navigation without sidebars, onboarding, semester & subject/section switchers, ProfileCard, and route transitions. Please ensure Neon Auth session cookie and auth provider proxy are synced for SSR viewer resolution when switching from mocks to real in INT-1. | Info |
