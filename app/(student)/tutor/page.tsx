@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Bot } from "lucide-react";
+import { PageBody } from "@/components/layout/PageBody";
+import { SectionHeader } from "@/components/layout/SectionHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
@@ -9,18 +11,19 @@ export const metadata: Metadata = {
 
 export default function TutorPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">AI Tutor</h1>
-        <p className="text-sm text-muted-foreground">
-          Ask questions grounded in faculty materials and your personal notes.
-        </p>
-      </div>
-      <EmptyState
-        icon={Bot}
-        title="AI Tutor Chat"
-        description="Start a chat conversation scoped to your semester, subject, or unit."
+    <>
+      <SectionHeader
+        eyebrow="[06] ASSISTANT"
+        title="AI Tutor"
+        description="Ask questions grounded in faculty materials and your personal notes."
       />
-    </div>
+      <PageBody>
+        <EmptyState
+          icon={Bot}
+          title="AI Tutor Chat"
+          description="Start a chat conversation scoped to your semester, subject, or unit."
+        />
+      </PageBody>
+    </>
   );
 }

@@ -25,10 +25,12 @@ export function Breadcrumbs() {
 
   if (segments.length === 0) return null;
 
-
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center text-xs text-muted-foreground">
-      <ol className="flex items-center gap-1.5 flex-wrap">
+    <nav
+      aria-label="Breadcrumb"
+      className="text-label border-border text-muted-foreground border-b px-4 py-2.5 sm:px-6"
+    >
+      <ol className="flex flex-wrap items-center gap-1.5">
         <li>
           <Link
             href={segments[0] === "faculty" ? "/faculty/dashboard" : "/dashboard"}
@@ -45,16 +47,13 @@ export function Breadcrumbs() {
 
           return (
             <li key={currentPath} className="flex items-center gap-1.5">
-              <ChevronRight className="size-3 text-muted-foreground/60" aria-hidden="true" />
+              <ChevronRight className="text-muted-foreground/60 size-3" aria-hidden="true" />
               {isLast ? (
-                <span className="font-medium text-foreground" aria-current="page">
+                <span className="text-foreground" aria-current="page">
                   {label}
                 </span>
               ) : (
-                <Link
-                  href={currentPath}
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href={currentPath} className="hover:text-foreground transition-colors">
                   {label}
                 </Link>
               )}

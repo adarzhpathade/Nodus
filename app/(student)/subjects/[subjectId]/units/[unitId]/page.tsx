@@ -12,6 +12,7 @@ import { TopicChecklist } from "@/components/student/TopicChecklist";
 import { ResourceList } from "@/components/student/ResourceList";
 import { UnitAssignmentCard } from "@/components/student/UnitAssignmentCard";
 import { cn } from "@/lib/utils";
+import { PageBody } from "@/components/layout/PageBody";
 
 interface UnitPageProps {
   params: Promise<{ subjectId: string; unitId: string }>;
@@ -55,30 +56,29 @@ export default async function UnitPage({ params }: UnitPageProps) {
   const statusMeta = progressStatusMeta[progress.status] ?? progressStatusMeta.not_started;
 
   return (
-    <div className="space-y-8">
+    <PageBody className="space-y-8">
       {/* Back button & Subject Breadcrumb Header */}
       <FadeIn direction="down" distance={8}>
         <div className="space-y-4">
           <Button
             variant="ghost"
             size="sm"
-            className="-ml-2 h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-           render={<Link href="/subjects" />}>
-              <ArrowLeft className="size-3.5" />
-              <span>Back to Subjects</span>
-            </Button>
+            className="text-muted-foreground hover:text-foreground -ml-2 h-8 gap-1.5 text-xs"
+            render={<Link href="/subjects" />}
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>Back to Subjects</span>
+          </Button>
 
-          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border/60 pb-6">
+          <div className="border-border/60 flex flex-wrap items-start justify-between gap-4 border-b pb-6">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="font-mono text-xs font-semibold">
                   {subject.code}
                 </Badge>
-                <span className="text-xs text-muted-foreground">
-                  {subject.name}
-                </span>
+                <span className="text-muted-foreground text-xs">{subject.name}</span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              <h1 className="font-heading text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
                 {unit.title}
               </h1>
             </div>
@@ -88,19 +88,21 @@ export default async function UnitPage({ params }: UnitPageProps) {
               <Button
                 size="sm"
                 className="h-9 gap-1.5 text-xs font-medium"
-               render={<Link href={`/tutor?unitId=${unit.id}`} />}>
-                  <Sparkles className="size-3.5" />
-                  <span>Ask AI Tutor</span>
-                </Button>
+                render={<Link href={`/tutor?unitId=${unit.id}`} />}
+              >
+                <Sparkles className="size-3.5" />
+                <span>Ask AI Tutor</span>
+              </Button>
 
               <Button
                 variant="outline"
                 size="sm"
                 className="h-9 gap-1.5 text-xs font-medium"
-               render={<Link href={`/practice?unitId=${unit.id}`} />}>
-                  <HelpCircle className="size-3.5" />
-                  <span>Practice Quiz</span>
-                </Button>
+                render={<Link href={`/practice?unitId=${unit.id}`} />}
+              >
+                <HelpCircle className="size-3.5" />
+                <span>Practice Quiz</span>
+              </Button>
             </div>
           </div>
         </div>
@@ -114,11 +116,12 @@ export default async function UnitPage({ params }: UnitPageProps) {
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+                <h2 className="font-heading text-foreground text-lg font-semibold tracking-tight">
                   Syllabus Topics
                 </h2>
-                <p className="text-xs text-muted-foreground">
-                  {progress.coveredTopics} of {progress.totalTopics} topics covered ({Math.round(progress.percent)}%)
+                <p className="text-muted-foreground text-xs">
+                  {progress.coveredTopics} of {progress.totalTopics} topics covered (
+                  {Math.round(progress.percent)}%)
                 </p>
               </div>
             </div>
@@ -129,10 +132,10 @@ export default async function UnitPage({ params }: UnitPageProps) {
           {/* Faculty Materials & Slides */}
           <section className="space-y-3">
             <div>
-              <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+              <h2 className="font-heading text-foreground text-lg font-semibold tracking-tight">
                 Faculty Materials & Slides
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Official lecture slides, notes, and handouts provided for this unit.
               </p>
             </div>
@@ -152,7 +155,7 @@ export default async function UnitPage({ params }: UnitPageProps) {
                   className={cn(
                     "rounded-full px-2 py-0.5 text-xs font-medium",
                     statusMeta.bg,
-                    statusMeta.text
+                    statusMeta.text,
                   )}
                 >
                   {statusMeta.label}
@@ -162,7 +165,7 @@ export default async function UnitPage({ params }: UnitPageProps) {
             <CardContent className="space-y-4 pt-0">
               <div className="space-y-1.5">
                 <div
-                  className="h-2.5 w-full overflow-hidden rounded-full bg-muted"
+                  className="bg-muted h-2.5 w-full overflow-hidden rounded-full"
                   role="progressbar"
                   aria-valuenow={Math.round(progress.percent)}
                   aria-valuemin={0}
@@ -173,32 +176,28 @@ export default async function UnitPage({ params }: UnitPageProps) {
                     style={{ width: `${Math.min(100, Math.max(0, progress.percent))}%` }}
                   />
                 </div>
-                <div className="flex justify-between text-xs text-muted-foreground">
+                <div className="text-muted-foreground flex justify-between text-xs">
                   <span>Progress score</span>
-                  <span className="font-semibold text-foreground">
-                    {Math.round(progress.percent)}%
-                  </span>
+                  <span className="text-foreground font-semibold">{Math.round(progress.percent)}%</span>
                 </div>
               </div>
 
-              <div className="divide-y divide-border/60 rounded-lg border border-border/60 bg-muted/20 text-xs">
+              <div className="divide-border/60 border-border/60 bg-muted/20 divide-y rounded-lg border text-xs">
                 <div className="flex justify-between p-2.5">
                   <span className="text-muted-foreground">Topics Covered</span>
-                  <span className="font-medium text-foreground">
+                  <span className="text-foreground font-medium">
                     {progress.coveredTopics} / {progress.totalTopics}
                   </span>
                 </div>
                 <div className="flex justify-between p-2.5">
                   <span className="text-muted-foreground">Quiz Average</span>
-                  <span className="font-medium text-foreground">
-                    {progress.quizAverage !== null
-                      ? `${Math.round(progress.quizAverage)}%`
-                      : "Not attempted"}
+                  <span className="text-foreground font-medium">
+                    {progress.quizAverage !== null ? `${Math.round(progress.quizAverage)}%` : "Not attempted"}
                   </span>
                 </div>
               </div>
 
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground text-[11px] leading-relaxed">
                 Coverage increases when you take notes on topics or score ≥50% in practice quizzes.
               </p>
             </CardContent>
@@ -206,31 +205,33 @@ export default async function UnitPage({ params }: UnitPageProps) {
 
           {/* Assignment Slot */}
           <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-foreground">Coursework</h3>
+            <h3 className="text-foreground text-sm font-semibold">Coursework</h3>
             <UnitAssignmentCard assignment={assignment} />
           </section>
 
           {/* Quick AI Help Banner */}
           <Card className="border-border/80 bg-muted/30">
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 text-foreground font-medium text-sm">
-                <Sparkles className="size-4 text-primary" />
+            <CardContent className="space-y-3 p-4">
+              <div className="text-foreground flex items-center gap-2 text-sm font-medium">
+                <Sparkles className="text-primary size-4" />
                 <span>Grounded AI Tutor</span>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Need clarification on {unit.title}? Ask questions grounded strictly in your syllabus and professor slides.
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                Need clarification on {unit.title}? Ask questions grounded strictly in your syllabus and
+                professor slides.
               </p>
               <Button
                 variant="outline"
                 size="sm"
                 className="w-full text-xs font-medium"
-               render={<Link href={`/tutor?unitId=${unit.id}`} />}>
-                  Chat with Unit Tutor
-                </Button>
+                render={<Link href={`/tutor?unitId=${unit.id}`} />}
+              >
+                Chat with Unit Tutor
+              </Button>
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>
+    </PageBody>
   );
 }

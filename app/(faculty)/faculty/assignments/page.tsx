@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { CheckSquare } from "lucide-react";
+import { PageBody } from "@/components/layout/PageBody";
+import { SectionHeader } from "@/components/layout/SectionHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
@@ -9,18 +11,19 @@ export const metadata: Metadata = {
 
 export default function FacultyAssignmentsPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">Faculty Assignments</h1>
-        <p className="text-sm text-muted-foreground">
-          Create offline coursework for your sections and manage grading.
-        </p>
-      </div>
-      <EmptyState
-        icon={CheckSquare}
-        title="Assignment Management"
-        description="Assignment creator and section-wise submissions table will appear here."
+    <>
+      <SectionHeader
+        eyebrow="[04] COURSEWORK"
+        title="Faculty Assignments"
+        description="Create offline coursework for your sections and manage grading."
       />
-    </div>
+      <PageBody>
+        <EmptyState
+          icon={CheckSquare}
+          title="Assignment Management"
+          description="Assignment creator and section-wise submissions table will appear here."
+        />
+      </PageBody>
+    </>
   );
 }

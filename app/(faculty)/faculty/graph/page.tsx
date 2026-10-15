@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { GitFork } from "lucide-react";
+import { PageBody } from "@/components/layout/PageBody";
+import { SectionHeader } from "@/components/layout/SectionHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
@@ -9,18 +11,19 @@ export const metadata: Metadata = {
 
 export default function FacultyGraphPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">Class Graph View</h1>
-        <p className="text-sm text-muted-foreground">
-          Syllabus knowledge tree with aggregated class mastery and student progress.
-        </p>
-      </div>
-      <EmptyState
-        icon={GitFork}
-        title="Class Knowledge Tree"
-        description="Interactive tree showing class-wide unit mastery and weak topics."
+    <>
+      <SectionHeader
+        eyebrow="[02] CLASS TREE"
+        title="Class Graph View"
+        description="Syllabus knowledge tree with aggregated class mastery and student progress."
       />
-    </div>
+      <PageBody>
+        <EmptyState
+          icon={GitFork}
+          title="Class Knowledge Tree"
+          description="Interactive tree showing class-wide unit mastery and weak topics."
+        />
+      </PageBody>
+    </>
   );
 }
