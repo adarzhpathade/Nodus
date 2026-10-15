@@ -7,3 +7,9 @@
  * Gemini embeddings are requested with this output dimensionality; changing it needs a migration + re-embed.
  */
 export const EMBEDDING_DIMENSIONS = 768;
+
+/**
+ * Gemini embedding model ID (used via @ai-sdk/google).
+ * Model IDs only in lib/ai/config.ts per AGENTS.md §10.1.
+ */
+export const EMBEDDING_MODEL_ID = "text-embedding-004";

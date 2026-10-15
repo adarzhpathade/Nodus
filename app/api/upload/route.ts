@@ -2,10 +2,17 @@
 // Fields: file, unitId, visibleSections ("A,B,C").  Response: 201 { resource: Resource } or { error }.
 // Works in both modes: the gateway decides (mock stores nothing; real lands in BE-4.3).
 import { ALLOWED_UPLOAD_MIME_TYPES, MAX_UPLOAD_BYTES, UploadResourceFields } from "@/contracts/resources";
+import { requireFaculty } from "@/lib/auth/guards";
 import { getGateway } from "@/lib/gateway";
 import { errorResponse, toErrorPayload, validationError } from "@/lib/actions/result";
 
 export async function POST(request: Request) {
+  try {
+    await requireFaculty();
+  } catch (error) {
+    return errorResponse(toErrorPayload(error));
+  }
+
   const form = await request.formData().catch(() => null);
   if (!form) return errorResponse({ code: "VALIDATION", message: "Expected multipart/form-data." });
 
@@ -13,7 +20,9 @@ export async function POST(request: Request) {
   if (!(file instanceof File) || file.size === 0) {
     return errorResponse({ code: "VALIDATION", message: "Choose a file to upload.", fieldErrors: { file: ["Required"] } });
   }
-  if (!(file.type in ALLOWED_UPLOAD_MIME_TYPES)) {
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  const isAllowed = file.type in ALLOWED_UPLOAD_MIME_TYPES || (ext && ["pdf", "ppt", "pptx"].includes(ext));
+  if (!isAllowed) {
     return errorResponse({
       code: "VALIDATION",
       message: "Only PDF, PPT and PPTX files are allowed.",

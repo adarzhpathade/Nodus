@@ -18,7 +18,7 @@
 | BE-1 | Contract sprint | 2 | 14 | 14 |
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 6 |
-| BE-4 | Curriculum, resources & ingestion | 4 | 9 | 2 |
+| BE-4 | Curriculum, resources & ingestion | 4 | 9 | 8 |
 | BE-5 | Notes | 5 | 8 | 0 |
 | BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
 | BE-7 | AI | 7–8 | 11 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **43** |
+| | **Total** | | **109** | **49** |
 
 ---
 
@@ -123,13 +123,13 @@
 |---|---|---|---|---|---|
 | BE-4.1 | Faculty: units CRUD + reorder (own subjects only) | P0 | BE-3.2 | Matches C-02 | ✅ |
 | BE-4.2 | Faculty: topics CRUD + reorder | P0 | BE-4.1 | Order respected everywhere | ✅ |
-| BE-4.3 | Storage bucket + `app/api/upload` (PDF/PPT/PPTX, size limit) | P0 | H-06 | File stored, `resources` row created | 🟡 Bucket + `lib/storage` client verified; upload route not built |
-| BE-4.4 | Section visibility filter on all resource queries | P0 | BE-4.3 | Students see only their sections | 🟡 Bucket + `lib/storage` client verified; upload route not built |
-| BE-4.5 | Text extraction per page/slide | P0 | BE-4.3 | Text + page number saved | 🟡 Bucket + `lib/storage` client verified; upload route not built |
-| BE-4.6 | Chunking + Gemini embeddings → `resource_chunks` (`lib/ai/rag/`) | P0 | BE-4.5 | Chunks with embeddings stored | ⬜ |
-| BE-4.7 | Ingestion status (processing / ready / failed) | P1 | BE-4.6 | Exposed via C-03 | ⬜ |
-| BE-4.8 | Activity log helper (`logActivity`) + `resource_opened` | P1 | BE-2.7 | Rows created | ⬜ |
-| BE-4.9 | **INT-2** support | P0 | FE-4.x | Resources run with real data | ⬜ |
+| BE-4.3 | Storage bucket + `app/api/upload` (PDF/PPT/PPTX, size limit) | P0 | H-06 | File stored, `resources` row created | ✅ Real upload in `resourcesApi`, storage upload, `resources` row created |
+| BE-4.4 | Section visibility filter on all resource queries | P0 | BE-4.3 | Students see only their sections | ✅ Filtered by student's section on reads, semester lock enforced |
+| BE-4.5 | Text extraction per page/slide | P0 | BE-4.3 | Text + page number saved | ✅ `lib/ai/rag/extract.ts` (PDF via pdf-parse, PPT/PPTX via officeparser) |
+| BE-4.6 | Chunking + Gemini embeddings → `resource_chunks` (`lib/ai/rag/`) | P0 | BE-4.5 | Chunks with embeddings stored | ✅ `chunk.ts` (~500–800 tokens) + `embed.ts` (Gemini via AI SDK, NULL fallback) |
+| BE-4.7 | Ingestion status (processing / ready / failed) | P1 | BE-4.6 | Exposed via C-03 | ✅ `ingest.ts` pipeline updates status to ready/failed, exposed in `Resource` |
+| BE-4.8 | Activity log helper (`logActivity`) + `resource_opened` | P1 | BE-2.7 | Rows created | ✅ `lib/db/queries/activity.ts`, logs `resource_opened` on `getResourceAccess` |
+| BE-4.9 | **INT-2** support | P0 | FE-4.x | Resources run with real data | 🟡 Ready for integration with FE |
 
 ---
 
@@ -252,3 +252,4 @@
 | 2026-10-15 | `mocks/gateway.ts` and `mocks/ai-tutor.ts` were given **placeholders** by BE so `main` compiles (every mock method throws NOT_IMPLEMENTED). They are FE-owned — replace with real mocks in FE-1.10 / FE-1.11 | Open |
 | 2026-10-15 | ESLint now allows FE to import `@/lib/auth/client` (sign-in/up/out); everything else in `lib/auth` stays blocked | Info |
 | 2026-10-15 | FE: update mocks/gateway.ts curriculum faculty methods to mirror NOT_FOUND / FORBIDDEN / VALIDATION / CONFLICT behaviour; noteLinkHref/parseNoteLinkHref now exported from contracts/notes.ts | Open |
+| 2026-10-15 | Real resources API, storage upload (`POST /api/upload`), and ingestion pipeline implemented (BE-4.3 to BE-4.8). FE can test against real resources by removing `resources` from `MOCK_FEATURES` | Info |
