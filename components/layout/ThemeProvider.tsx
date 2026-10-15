@@ -2,7 +2,7 @@
 // Light / dark / system theme. Toggles the `.dark` class on <html> (tokens in app/globals.css).
 // The no-flash inline script in app/layout.tsx applies the stored theme before first paint.
 import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from "react";
-import { DARK_QUERY, THEME_STORAGE_KEY } from "./themeScript";
+import { DARK_MODE_ENABLED, DARK_QUERY, THEME_STORAGE_KEY } from "./themeScript";
 
 export type Theme = "light" | "dark" | "system";
 
@@ -17,6 +17,7 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 const listeners = new Set<() => void>();
 
 function readTheme(): Theme {
+  if (!DARK_MODE_ENABLED) return "light";
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
     return stored === "light" || stored === "dark" ? stored : "system";
@@ -71,4 +72,3 @@ export function useTheme() {
   if (!context) throw new Error("useTheme must be used inside <ThemeProvider>");
   return context;
 }
-

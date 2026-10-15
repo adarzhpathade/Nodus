@@ -36,6 +36,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-signal: var(--signal);
+  --color-faint: var(--faint);
   --color-signal-foreground: var(--signal-foreground);
   --color-ink: var(--ink);
   --color-paper: var(--paper);
@@ -118,7 +119,8 @@
 
   --paper: #f5f5ef;
   --ink: #282828;
-  --hairline: #d7d7d1;
+  --hairline: #b3b3af; /* sampled from the reference: section lines and card borders */
+  --faint: #b4b4b0; /* index numbers [01], grey line art */
 
   --background: #f5f5ef;
   --foreground: #282828;
@@ -131,16 +133,16 @@
   --secondary: #ecece6;
   --secondary-foreground: #282828;
   --muted: #ecece6;
-  --muted-foreground: #606060;
+  --muted-foreground: #60605e;
   --accent: #ecece6;
   --accent-foreground: #282828;
   --destructive: #c23b22;
-  --border: #d7d7d1;
-  --input: #d7d7d1;
-  --ring: #f83400;
+  --border: #b3b3af;
+  --input: #b3b3af;
+  --ring: #fa3600;
 
   /* Signal orange: links, active nav, arrows, the single accent dot/square */
-  --signal: #f83400;
+  --signal: #fa3600;
   --signal-foreground: #ffffff;
 
   --success: #2f9e7a;
@@ -151,7 +153,7 @@
   --info-foreground: #f5f5ef;
 
   /* Progress status: always paired with a % and an icon/label (AGENTS.md section 15) */
-  --status-not-started: #b0b0a8;
+  --status-not-started: #b4b4b0;
   --status-low: #c23b22;
   --status-in-progress: #e0a100;
   --status-mastered: #2f9e7a;
@@ -163,14 +165,14 @@
   --heat-4: #2f9e7a;
 
   --chart-1: #282828;
-  --chart-2: #f83400;
-  --chart-3: #6cc4a4;
-  --chart-4: #b0b0a8;
+  --chart-2: #fa3600;
+  --chart-3: #66ceab;
+  --chart-4: #b4b4b0;
   --chart-5: #707070;
 
   --graph-canvas: #f5f5ef;
-  --graph-edge: #b0b0a8;
-  --graph-edge-prerequisite: #f83400;
+  --graph-edge: #b8b8b3;
+  --graph-edge-prerequisite: #fa3600;
 
   --sidebar: #f5f5ef;
   --sidebar-foreground: #282828;
@@ -178,12 +180,12 @@
   --sidebar-primary-foreground: #f5f5ef;
   --sidebar-accent: #ecece6;
   --sidebar-accent-foreground: #282828;
-  --sidebar-border: #d7d7d1;
-  --sidebar-ring: #f83400;
+  --sidebar-border: #b3b3af;
+  --sidebar-ring: #fa3600;
 
   /* Flat design: no soft shadows. Elevation = a hairline border. */
   --shadow-card: none;
-  --shadow-pop: 0 0 0 1px #d7d7d1;
+  --shadow-pop: 0 0 0 1px #b3b3af;
 }
 
 /* ===== Dark: ink paper ===== */
@@ -266,21 +268,6 @@
     @apply bg-background text-foreground;
     font-weight: 400;
     letter-spacing: -0.01em;
-  }
-  /* Subtle paper grain from the reference. Pure SVG noise, fixed, non-interactive. */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    pointer-events: none;
-    opacity: 0.35;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  .dark body::before {
-    mix-blend-mode: screen;
-    opacity: 0.2;
   }
 }
 

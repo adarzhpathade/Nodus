@@ -323,7 +323,7 @@ export function ResourceUploader({
                       {isPdf ? (
                         <FileText className="size-5 text-primary" />
                       ) : (
-                        <Presentation className="size-5 text-amber-500" />
+                        <Presentation className="size-5 text-foreground" />
                       )}
                     </div>
                     <div className="min-w-0">

@@ -22,10 +22,11 @@ Use Tailwind classes backed by tokens (`bg-background`, `text-muted-foreground`,
 |---|---|---|---|
 | `background` / `paper` | `#F5F5EF` | `#161614` | Page and card surface (cards are the same paper, separated by borders) |
 | `foreground` / `ink` | `#282828` | `#F5F5EF` | Text, lines, primary buttons |
-| `muted-foreground` | `#606060` | `#A8A8A0` | Descriptions, numbering `[01]`, helper text |
+| `muted-foreground` | `#60605E` | `#A8A8A0` | Descriptions, numbering `[01]`, helper text |
 | `muted`, `secondary`, `accent` | `#ECECE6` | `#222220` | Hover / subtle fills |
-| `border` / `hairline` | `#D7D7D1` | `#3A3A36` | Every grid line, 1px |
-| `signal` | `#F83400` | `#FF4A1C` | The one accent: active nav, links, arrows, focus ring, accent dots |
+| `border` / `hairline` | `#B3B3AF` | `#3A3A36` | Every grid line, 1px (sampled from the reference) |
+| `faint` | `#B4B4B0` | `#5A5A54` | Index numbers `[01]`, grey line art |
+| `signal` | `#FA3600` | `#FF4A1C` | The one accent: active nav, links, arrows, focus ring, accent dots |
 | `popover` | `#FAFAF6` | `#1C1C18` | Menus, dialogs |
 | `destructive` | `#C23B22` | `#E5604A` | Errors, delete |
 
@@ -33,14 +34,14 @@ Use Tailwind classes backed by tokens (`bg-background`, `text-muted-foreground`,
 
 | Status | Token | Light | Dark |
 |---|---|---|---|
-| Not started (0%) | `status-not-started` | `#B0B0A8` | `#5A5A54` |
+| Not started (0%) | `status-not-started` | `#B4B4B0` | `#5A5A54` |
 | Low (1–39%) | `status-low` | `#C23B22` | `#E5604A` |
 | In progress (40–75%) | `status-in-progress` | `#E0A100` | `#E8B531` |
 | Mastered (>75%) | `status-mastered` | `#2F9E7A` | `#6CC4A4` |
 
 Orange (`signal`) is **brand/interaction only**, never a progress status, so a student never confuses "active" with "behind".
 
-Other scales: `heat-0..4` (activity heatmap, greyscale → teal), `chart-1..5` (ink, orange, mint `#6CC4A4`, greys), `graph-canvas`, `graph-edge`, `graph-edge-prerequisite` (orange, dashed).
+Other scales: `heat-0..4` (activity heatmap, greyscale → teal), `chart-1..5` (ink, orange, mint `#66CEAB`, greys), `graph-canvas`, `graph-edge`, `graph-edge-prerequisite` (orange, dashed).
 
 Rule of thumb: ~90% paper and ink, one orange element per view, teal only for data/success.
 
@@ -63,7 +64,7 @@ Only one mono weight (Medium) exists — don't use `font-bold` on mono text. Fon
 - **No shadows.** Elevation is a border (`--shadow-pop` is a 1px ring). No blur, no glass.
 - **Grid:** pages are a frame of bordered cells (use the `cell` utility). Layout is a 12-col grid on desktop with cells touching (no gaps); gutters appear as padding inside cells (24–32px).
 - **Spacing scale:** 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96. Section padding 48–96px vertical.
-- **Background grain:** a faint paper noise is applied globally (`body::before`). Don't add your own.
+- **Background grain:** a faint, still paper noise is rendered once in `app/layout.tsx` with `<Noise />` (`components/layout/Noise.tsx`: `soft-light`, opacity 0.5, blend set on the overlay root, `fps={0}`, no dust). Don't add your own.
 - **Blueprint grid:** `bg-blueprint` for hero stages, the graph canvas and empty states.
 
 ## 5. Page frame and rulers (the most recognisable trait)
