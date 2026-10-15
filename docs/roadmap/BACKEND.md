@@ -19,7 +19,7 @@
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 6 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 8 |
-| BE-5 | Notes | 5 | 8 | 0 |
+| BE-5 | Notes | 5 | 8 | 6 |
 | BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
 | BE-7 | AI | 7–8 | 11 | 0 |
 | BE-8 | Assignments & notifications | 9 | 8 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **49** |
+| | **Total** | | **109** | **55** |
 
 ---
 
@@ -137,14 +137,14 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-5.1 | Notes CRUD (owner-only, always under a topic) | P0 | BE-3.2 | Matches C-04 | ⬜ |
-| BE-5.2 | Auto-save action (idempotent update, `updated_at`) | P0 | BE-5.1 | Frequent saves are safe | ⬜ |
-| BE-5.3 | Links by ID (note/topic/unit) + backlinks query | P0 | BE-5.1 | Rename never breaks links | ⬜ |
-| BE-5.4 | Full-text search + tags | P1 | BE-5.1 | Search returns own notes only | ⬜ |
-| BE-5.5 | Quick-switcher search (notes, units, topics) | P1 | BE-5.4 | One query returns mixed results | ⬜ |
-| BE-5.6 | Note chunking + embeddings (debounced / background) | P0 | BE-4.6 | `note_chunks` updated after edits | ⬜ |
-| BE-5.7 | Markdown export route + `note_created/updated` activity | P1 | BE-5.1 | `.md` download; activity rows | ⬜ |
-| BE-5.8 | **INT-3** support | P0 | FE-5.x | Notes run with real data | ⬜ |
+| BE-5.1 | Notes CRUD (owner-only, always under a topic) | P0 | BE-3.2 | Matches C-04 | ✅ Owner-only, branch/open semester checked, mapped to C-04 |
+| BE-5.2 | Auto-save action (idempotent update, `updated_at`) | P0 | BE-5.1 | Frequent saves are safe | ✅ Partial update, updated_at bump, title min 1 validation |
+| BE-5.3 | Links by ID (note/topic/unit) + backlinks query | P0 | BE-5.1 | Rename never breaks links | ✅ addLink/removeLink, diff sync on save from `nodus://` hrefs, backlinks with snippets, link preview |
+| BE-5.4 | Full-text search + tags | P1 | BE-5.1 | Search returns own notes only | ✅ `search_vector` GIN index + ILIKE fallback, tag array filter, `listTags()` |
+| BE-5.5 | Quick-switcher search (notes, units, topics) | P1 | BE-5.4 | One query returns mixed results | ✅ Ctrl+K ranked search across notes, topics, units, subjects in semester |
+| BE-5.6 | Note chunking + embeddings (debounced / background) | P0 | BE-4.6 | `note_chunks` updated after edits | ⬜ Skipped for now (needs the Gemini key); not started |
+| BE-5.7 | Markdown export route + `note_created/updated` activity | P1 | BE-5.1 | `.md` download; activity rows | ✅ `exportMarkdown()` (.md filename + content), `activity_log` rows with 10-minute throttling for updates |
+| BE-5.8 | **INT-3** support | P0 | FE-5.x | Notes run with real data | 🟡 Ready for integration with FE |
 
 ---
 
@@ -253,3 +253,4 @@
 | 2026-10-15 | ESLint now allows FE to import `@/lib/auth/client` (sign-in/up/out); everything else in `lib/auth` stays blocked | Info |
 | 2026-10-15 | FE: update mocks/gateway.ts curriculum faculty methods to mirror NOT_FOUND / FORBIDDEN / VALIDATION / CONFLICT behaviour; noteLinkHref/parseNoteLinkHref now exported from contracts/notes.ts | Open |
 | 2026-10-15 | Real resources API, storage upload (`POST /api/upload`), and ingestion pipeline implemented (BE-4.3 to BE-4.8). FE can test against real resources by removing `resources` from `MOCK_FEATURES` | Info |
+| 2026-10-15 | Real notes API implemented (BE-5.1 to 5.5, 5.7). FE can test against real notes by removing `notes` from `MOCK_FEATURES`. Server actions in `lib/actions/notes.ts` cover all NotesApi methods. Note embeddings (BE-5.6) deferred until Gemini API key is configured. | Info |
