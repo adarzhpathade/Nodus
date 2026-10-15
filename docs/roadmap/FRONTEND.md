@@ -17,8 +17,8 @@
 |---|---|---|---|---|
 | FE-0 | Frontend docs | 1 | 4 | 0 |
 | FE-1 | Foundation + mocks | 2 | 12 | 12 |
-| FE-3 | Auth & app shell | 3 | 9 | 0 |
-| FE-4 | Faculty content & unit page | 4 | 6 | 0 |
+| FE-3 | Auth & app shell | 3 | 9 | 8 |
+| FE-4 | Faculty content & unit page | 4 | 6 | 5 |
 | FE-5 | Notes | 5 | 10 | 0 |
 | FE-6 | Graph View | 6–7 | 12 | 0 |
 | FE-7 | AI UI | 7–8 | 9 | 0 |
@@ -27,7 +27,7 @@
 | FE-10 | Design replication & motion polish | 10–11 | 12 | 0 |
 | FE-11 | Testing & demo | 11–12 | 7 | 0 |
 | FE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **101** | **12** |
+| | **Total** | | **101** | **25** |
 
 > FE starts after **BOOT** is merged to `main` (BE task BOOT-12).
 
@@ -94,11 +94,11 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| FE-4.1 | Faculty content page: subjects → units → topics tree | P0 | FE-3.4 | Lists own subjects | ⬜ |
-| FE-4.2 | Units + topics CRUD UI with drag-to-reorder | P0 | FE-4.1 | Calls actions; optimistic UI | ⬜ |
-| FE-4.3 | Upload UI (drag & drop, section visibility, ingestion status) | P0 | FE-4.1 | Upload flow complete on mocks | ⬜ |
-| FE-4.4 | Student subjects list page | P0 | FE-3.3 | Subjects for selected semester | ⬜ |
-| FE-4.5 | Student unit page (topics, resources, assignment slot, AI action buttons) | P0 | FE-4.4 | Resource open/download works | ⬜ |
+| FE-4.1 | Faculty content page: subjects → units → topics tree | P0 | FE-3.4 | Lists own subjects | ✅ |
+| FE-4.2 | Units + topics CRUD UI with drag-to-reorder | P0 | FE-4.1 | Calls actions; optimistic UI | ✅ |
+| FE-4.3 | Upload UI (drag & drop, section visibility, ingestion status) | P0 | FE-4.1 | Upload flow complete on mocks | ✅ |
+| FE-4.4 | Student subjects list page | P0 | FE-3.3 | Subjects for selected semester | ✅ |
+| FE-4.5 | Student unit page (topics, resources, assignment slot, AI action buttons) | P0 | FE-4.4 | Resource open/download works | ✅ |
 | FE-4.6 | **INT-2**: switch `resources` to real | P0 | BE-4.9 | Works with real data | ⬜ |
 
 ---
