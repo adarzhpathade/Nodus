@@ -17,7 +17,7 @@
 | BOOT | Repo bootstrap (on `main`, before split) | 1 | 12 | 10 |
 | BE-1 | Contract sprint | 2 | 14 | 13 |
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
-| BE-3 | Auth & roles | 3 | 7 | 1 |
+| BE-3 | Auth & roles | 3 | 7 | 6 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 0 |
 | BE-5 | Notes | 5 | 8 | 0 |
 | BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **35** |
+| | **Total** | | **109** | **40** |
 
 ---
 
@@ -108,12 +108,12 @@
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
 | BE-3.1 | Neon Auth server setup; request provider in `app/layout.tsx` from FE if needed | P0 | BE-2.3 | Sign up / log in / log out work | ✅ `lib/auth/server.ts`, `/api/auth/[...path]`, `proxy.ts`; sign-up/in/out verified |
-| BE-3.2 | `lib/auth/guards.ts` (`requireUser`, `requireStudent`, `requireFaculty`) | P0 | BE-3.1 | Used by every action | ✅ `lib/auth/server.ts`, `/api/auth/[...path]`, `proxy.ts`; sign-up/in/out verified |
-| BE-3.3 | `proxy.ts`: role redirects, onboarding redirect, protect route groups | P0 | BE-3.2 | Student → `/dashboard`, Faculty → `/faculty/dashboard` | ⬜ |
-| BE-3.4 | Gateway `auth`: session, onboarding, profile | P0 | BE-3.2 | Matches C-01 | ⬜ |
-| BE-3.5 | Selected semester / subject+section persistence (cookie) + locked-semester enforcement | P0 | BE-3.4 | Future semester requests rejected | ⬜ |
-| BE-3.6 | Gateway `curriculum` read: semesters, subjects, units, topics, prerequisites | P0 | BE-2.8 | Matches C-02 | ⬜ |
-| BE-3.7 | **INT-1** support: fix data issues found in integration | P0 | FE-3.x | Auth + curriculum run with real data | ⬜ |
+| BE-3.2 | `lib/auth/guards.ts` (`requireUser`, `requireStudent`, `requireFaculty`) | P0 | BE-3.1 | Used by every action | ✅ `requireViewer/Student/StudentAccount/Faculty/FacultyTeaches`, `assertSemesterOpen` |
+| BE-3.3 | `proxy.ts`: role redirects, onboarding redirect, protect route groups | P0 | BE-3.2 | Student → `/dashboard`, Faculty → `/faculty/dashboard` | ✅ |
+| BE-3.4 | Gateway `auth`: session, onboarding, profile | P0 | BE-3.2 | Matches C-01 | ✅ |
+| BE-3.5 | Selected semester / subject+section persistence (cookie) + locked-semester enforcement | P0 | BE-3.4 | Future semester requests rejected | ✅ |
+| BE-3.6 | Gateway `curriculum` read: semesters, subjects, units, topics, prerequisites | P0 | BE-2.8 | Matches C-02 | ✅ |
+| BE-3.7 | **INT-1** support: fix data issues found in integration | P0 | FE-3.x | Auth + curriculum run with real data | 🟡 Ready — waiting for FE-3.x (INT-1) |
 
 ---
 

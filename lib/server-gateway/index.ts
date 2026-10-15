@@ -1,13 +1,14 @@
 // Real implementation of NodusGateway (DB, auth checks, AI). Owner: BE.
-// Each feature starts as NOT_IMPLEMENTED and is replaced by a real module as BE-3 … BE-9 land,
-// e.g. `notes: notesApi` from "./notes".
+// Features not built yet throw NOT_IMPLEMENTED; each is replaced by a real module as BE-3 … BE-9 land.
 import "server-only";
 import { unimplementedApi } from "@/contracts/common";
 import type { NodusGateway } from "@/contracts/gateway";
+import { authApi } from "./auth";
+import { curriculumApi } from "./curriculum";
 
 export const serverGateway: NodusGateway = {
-  auth: unimplementedApi("auth", "real"),
-  curriculum: unimplementedApi("curriculum", "real"),
+  auth: authApi, // BE-3.4 / 3.5
+  curriculum: curriculumApi, // reads BE-3.6 · faculty edits BE-4.1/4.2
   resources: unimplementedApi("resources", "real"),
   notes: unimplementedApi("notes", "real"),
   graph: unimplementedApi("graph", "real"),

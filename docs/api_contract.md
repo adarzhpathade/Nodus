@@ -194,6 +194,23 @@ sendMessage({ text }, { body: { conversationId, scope } });
 ### `/api/auth/*` — Neon Auth proxy
 - Used by `authClient`. Don't call directly.
 
+### `POST /api/dev/gateway` — gateway explorer (development only)
+- Body: `{ "feature": "curriculum", "method": "listSubjects", "args": [3] }`
+- Runs the method with **your session cookies** and the current `MOCK_FEATURES`, and returns `{ ok, data }` or `{ error }` — exactly what a page would get. Handy during integration checkpoints.
+- 404 in production.
+
+---
+
+## 4b. Real backend status
+
+| Feature | Real? | Since |
+|---|---|---|
+| `auth` | ✅ all methods | BE-3 |
+| `curriculum` | ✅ reads · ⏳ faculty edits (NOT_IMPLEMENTED until BE-4.1/4.2) | BE-3 |
+| everything else | ⏳ NOT_IMPLEMENTED — keep in `MOCK_FEATURES` | — |
+
+**Routing (`proxy.ts`, real auth only):** signed out → `/login` · student without profile → `/onboarding` · student on `/faculty/*` or `/onboarding` → `/dashboard` · faculty on student pages → `/faculty/dashboard` · signed in on `/login`/`/signup` → their home. Selections are stored in httpOnly cookies (`nodus_semester`, `nodus_faculty`).
+
 ---
 
 ## 5. Changelog
