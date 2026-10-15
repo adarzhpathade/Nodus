@@ -3,15 +3,26 @@
 import "server-only";
 import { z } from "zod";
 
+const optional = z.string().trim().optional().transform((value) => value || undefined);
+
 const schema = z.object({
-  DATABASE_URL: z.url().optional(),
-  NEON_AUTH_BASE_URL: z.url().optional(),
-  NEON_AUTH_COOKIE_SECRET: z.string().min(32).optional(),
-  GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
-  GROQ_API_KEY: z.string().optional(),
-  STORAGE_BUCKET: z.string().optional(),
-  STORAGE_ACCESS_KEY: z.string().optional(),
-  STORAGE_SECRET_KEY: z.string().optional(),
+  // Postgres (pooled for the app, unpooled for migrations)
+  DATABASE_URL: optional,
+  DATABASE_URL_UNPOOLED: optional,
+  // Neon Auth
+  NEON_AUTH_BASE_URL: optional,
+  NEON_AUTH_COOKIE_SECRET: optional.refine((v) => v === undefined || v.length >= 32, {
+    message: "NEON_AUTH_COOKIE_SECRET must be at least 32 characters",
+  }),
+  // Neon Object Storage (AWS-standard names, read automatically by the S3 client)
+  AWS_ACCESS_KEY_ID: optional,
+  AWS_SECRET_ACCESS_KEY: optional,
+  AWS_ENDPOINT_URL_S3: optional,
+  AWS_REGION: optional,
+  // AI
+  GOOGLE_GENERATIVE_AI_API_KEY: optional,
+  GROQ_API_KEY: optional,
+  // App
   MOCK_FEATURES: z.string().default(""),
   NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
 });

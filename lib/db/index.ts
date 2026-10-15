@@ -1,15 +1,20 @@
-// Drizzle client for Neon (lazy, so the app still runs on mocks without a database). Owner: BE.
+// Drizzle over node-postgres, using Neon's pooled connection (DATABASE_URL).
+// On Vercel Fluid compute, attachDatabasePool lets idle connections close cleanly before a function suspends.
+// Lazy, so the app still runs on mocks without a database. Owner: BE.
 import "server-only";
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { attachDatabasePool } from "@vercel/functions";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import { requireEnv } from "@/lib/env";
 import * as schema from "./schema";
 
-let client: ReturnType<typeof createDb> | undefined;
-
 function createDb() {
-  return drizzle(neon(requireEnv("DATABASE_URL")), { schema });
+  const pool = new Pool({ connectionString: requireEnv("DATABASE_URL") });
+  attachDatabasePool(pool);
+  return drizzle({ client: pool, schema });
 }
+
+let client: ReturnType<typeof createDb> | undefined;
 
 export function getDb() {
   client ??= createDb();

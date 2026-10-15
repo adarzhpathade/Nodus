@@ -74,11 +74,11 @@ See gaps on the graph → write notes / practice quiz → topic turns ✅ → gr
 | Knowledge Web (bonus) | **react-force-graph-2d** | Only when asked |
 | Editor | **Tiptap** | Rich text; stored as Markdown |
 | Charts | **Recharts**, **Nivo** (calendar heatmap) | |
-| Database | **Neon Postgres** + **pgvector** | Vector search for RAG |
+| Database | **Neon Postgres** + **pgvector** | `pg` (node-postgres) + `attachDatabasePool` for Vercel; pooled `DATABASE_URL` for the app, `DATABASE_URL_UNPOOLED` for migrations |
 | ORM | **Drizzle ORM** + drizzle-kit | Migrations in `lib/db/migrations` |
 | Auth | **Neon Auth** | Role stored on the user profile |
 | AI | **Google Gemini** via **Vercel AI SDK** | Chat, embeddings, vision; Groq as optional fallback |
-| File storage | Neon storage / S3-compatible bucket | Faculty uploads only |
+| File storage | **Neon Object Storage** (bucket `nodus-uploads`, private) via `files-sdk` | `lib/storage` · faculty uploads only · presigned URLs on read |
 | PDF/PPT parsing | `pdf-parse` / `officeparser` (or equivalent) | Text extraction for RAG |
 | Validation | **Zod** | All inputs and AI structured outputs |
 | Data fetching (client) | **TanStack Query** | Only where client-side fetching is needed |
@@ -134,7 +134,7 @@ The project is built by **two parallel roles**: a **Backend (BE)** developer/age
 
 | Owner | Paths |
 |---|---|
-| **BE** | `contracts/**`, `lib/server-gateway/**`, `lib/actions/**`, `lib/ai/**`, `lib/db/**`, `lib/progress/**`, `lib/auth/**`, `lib/env.ts`, `app/api/**`, `proxy.ts`, `drizzle.config.ts`, `scripts/**`, `.env.example`, `.github/**` |
+| **BE** | `contracts/**`, `lib/server-gateway/**`, `lib/actions/**`, `lib/ai/**`, `lib/db/**`, `lib/progress/**`, `lib/auth/**`, `lib/storage/**`, `lib/env.ts`, `app/api/**`, `proxy.ts`, `neon.ts`, `drizzle.config.ts`, `scripts/**`, `.env.example`, `.github/**` |
 | **FE** | `app/**` (except `app/api/**`), `components/**`, `hooks/**`, `stores/**`, `mocks/**`, `public/**` |
 | **FROZEN** | `package.json`, `package-lock.json`, `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`, `.gitignore`, `components.json`, `lib/gateway/index.ts`, `lib/utils.ts` — changed only via a `chore/` PR (see §5.4) |
 | **HUMAN** | `AGENTS.md`, `CLAUDE.md`, `README.md`, `docs/PROJECT_OVERVIEW.md`, `docs/roadmap/README.md`, `docs/academic/**`, `literature/**`, `design/**` (design files you provide) |
@@ -688,30 +688,24 @@ Rules:
 
 ## 16. Environment variables
 
-Keep `.env.example` updated. Never commit `.env` or real values.
+Keep `.env.example` updated. Never commit `.env` or real values. Validated in `lib/env.ts`.
 
-```
-# Database
-DATABASE_URL=
+**Neon values are pulled automatically** by `neon deploy` / `neon env pull` (project config lives in `neon.ts`). Only `NEON_AUTH_COOKIE_SECRET`, the AI keys and app settings are filled by hand.
 
-# Auth (Neon Auth)
-NEON_AUTH_*=                       # as required by Neon Auth setup
+| Variable | Source | Used by |
+|---|---|---|
+| `DATABASE_URL` | Neon (pooled) | App queries (`lib/db`) |
+| `DATABASE_URL_UNPOOLED` | Neon (direct) | Drizzle migrations only |
+| `NEON_BRANCH` | Neon | Info |
+| `NEON_AUTH_BASE_URL`, `NEON_AUTH_JWKS_URL` | Neon | `lib/auth/server.ts` |
+| `NEON_AUTH_COOKIE_SECRET` | You (`openssl rand -base64 32`) | `lib/auth/server.ts` |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, `AWS_REGION` | Neon Object Storage | `lib/storage` |
+| `GOOGLE_GENERATIVE_AI_API_KEY`, `GROQ_API_KEY` | Google AI Studio / Groq | `lib/ai` |
+| `NEXT_PUBLIC_APP_URL` | You | App |
+| `MOCK_FEATURES` | You | `lib/gateway` (`all`, a comma list, or empty) |
+| `HEALTHCHECK_SECRET` | You (production only) | `/api/health` — open in dev, needs `x-health-secret` header in production |
 
-# AI
-GOOGLE_GENERATIVE_AI_API_KEY=
-GROQ_API_KEY=                      # optional fallback
-
-# Storage
-STORAGE_BUCKET=
-STORAGE_ACCESS_KEY=
-STORAGE_SECRET_KEY=
-
-# App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Parallel development
-MOCK_FEATURES=all                  # comma list (auth,curriculum,resources,notes,graph,ai,assignments,dashboard,notifications) or "all" or empty for all-real
-```
+**Service check:** `GET /api/health` tests Postgres + pgvector, Neon Auth, and storage (upload → presigned download → delete).
 
 ---
 

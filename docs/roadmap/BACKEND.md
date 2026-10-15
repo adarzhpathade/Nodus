@@ -16,8 +16,8 @@
 | BE-0 | Backend docs | 1 | 5 | 0 |
 | BOOT | Repo bootstrap (on `main`, before split) | 1 | 12 | 10 |
 | BE-1 | Contract sprint | 2 | 14 | 0 |
-| BE-2 | Database & seed | 2–3 | 9 | 0 |
-| BE-3 | Auth & roles | 3 | 7 | 0 |
+| BE-2 | Database & seed | 2–3 | 9 | 1 |
+| BE-3 | Auth & roles | 3 | 7 | 1 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 0 |
 | BE-5 | Notes | 5 | 8 | 0 |
 | BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **10** |
+| | **Total** | | **109** | **12** |
 
 ---
 
@@ -91,9 +91,9 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-2.1 | Neon project, enable `pgvector`, dev + prod branches | P0 | H-06 | `DATABASE_URL` works | ⬜ |
-| BE-2.2 | Drizzle config + client + migration scripts | P0 | BOOT | `db:generate/migrate/studio` work | ⬜ |
-| BE-2.3 | Schema: users, student_profiles, branches, semesters, subjects, subject_prerequisites, units, topics, faculty map | P0 | BE-2.2 | Migrated | ⬜ |
+| BE-2.1 | Neon project, enable `pgvector`, dev + prod branches | P0 | H-06 | `DATABASE_URL` works | 🟡 Project linked (`neon.ts`), pgvector enabled via migration 0000; `dev` branch not created yet |
+| BE-2.2 | Drizzle config + client + migration scripts | P0 | BOOT | `db:generate/migrate/studio` work | ✅ |
+| BE-2.3 | Schema: users, student_profiles, branches, semesters, subjects, subject_prerequisites, units, topics, faculty map | P0 | BE-2.2 | Migrated | ✅ |
 | BE-2.4 | Schema: resources, resource_chunks (vector + index) | P0 | BE-2.3 | Migrated | ⬜ |
 | BE-2.5 | Schema: notes, note_chunks, note_links | P0 | BE-2.3 | Migrated | ⬜ |
 | BE-2.6 | Schema: assignments, assignment_sections, assignment_status | P0 | BE-2.3 | Migrated | ⬜ |
@@ -107,8 +107,8 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-3.1 | Neon Auth server setup; request provider in `app/layout.tsx` from FE if needed | P0 | BE-2.3 | Sign up / log in / log out work | ⬜ |
-| BE-3.2 | `lib/auth/guards.ts` (`requireUser`, `requireStudent`, `requireFaculty`) | P0 | BE-3.1 | Used by every action | ⬜ |
+| BE-3.1 | Neon Auth server setup; request provider in `app/layout.tsx` from FE if needed | P0 | BE-2.3 | Sign up / log in / log out work | ✅ `lib/auth/server.ts`, `/api/auth/[...path]`, `proxy.ts`; sign-up/in/out verified |
+| BE-3.2 | `lib/auth/guards.ts` (`requireUser`, `requireStudent`, `requireFaculty`) | P0 | BE-3.1 | Used by every action | ✅ `lib/auth/server.ts`, `/api/auth/[...path]`, `proxy.ts`; sign-up/in/out verified |
 | BE-3.3 | `proxy.ts`: role redirects, onboarding redirect, protect route groups | P0 | BE-3.2 | Student → `/dashboard`, Faculty → `/faculty/dashboard` | ⬜ |
 | BE-3.4 | Gateway `auth`: session, onboarding, profile | P0 | BE-3.2 | Matches C-01 | ⬜ |
 | BE-3.5 | Selected semester / subject+section persistence (cookie) + locked-semester enforcement | P0 | BE-3.4 | Future semester requests rejected | ⬜ |
@@ -123,9 +123,9 @@
 |---|---|---|---|---|---|
 | BE-4.1 | Faculty: units CRUD + reorder (own subjects only) | P0 | BE-3.2 | Matches C-02 | ⬜ |
 | BE-4.2 | Faculty: topics CRUD + reorder | P0 | BE-4.1 | Order respected everywhere | ⬜ |
-| BE-4.3 | Storage bucket + `app/api/upload` (PDF/PPT/PPTX, size limit) | P0 | H-06 | File stored, `resources` row created | ⬜ |
-| BE-4.4 | Section visibility filter on all resource queries | P0 | BE-4.3 | Students see only their sections | ⬜ |
-| BE-4.5 | Text extraction per page/slide | P0 | BE-4.3 | Text + page number saved | ⬜ |
+| BE-4.3 | Storage bucket + `app/api/upload` (PDF/PPT/PPTX, size limit) | P0 | H-06 | File stored, `resources` row created | 🟡 Bucket + `lib/storage` client verified; upload route not built |
+| BE-4.4 | Section visibility filter on all resource queries | P0 | BE-4.3 | Students see only their sections | 🟡 Bucket + `lib/storage` client verified; upload route not built |
+| BE-4.5 | Text extraction per page/slide | P0 | BE-4.3 | Text + page number saved | 🟡 Bucket + `lib/storage` client verified; upload route not built |
 | BE-4.6 | Chunking + Gemini embeddings → `resource_chunks` (`lib/ai/rag/`) | P0 | BE-4.5 | Chunks with embeddings stored | ⬜ |
 | BE-4.7 | Ingestion status (processing / ready / failed) | P1 | BE-4.6 | Exposed via C-03 | ⬜ |
 | BE-4.8 | Activity log helper (`logActivity`) + `resource_opened` | P1 | BE-2.7 | Rows created | ⬜ |
