@@ -32,11 +32,13 @@ npm run db:seed            # fill demo data (dev branch only)
 npm run dev                # http://localhost:3000
 ```
 
-## 3. Neon branches
+## 3. Neon project & branches
+
+Project **`nodus-singapore`** (`spring-fog-12666043`) in **AWS Asia Pacific (Singapore)** — Postgres, Neon Auth and Object Storage (bucket `nodus-uploads`). Chosen for low latency from India (~80 ms per query).
 
 | Branch | Use | Seeded? |
 |---|---|---|
-| `production` | Deployed app (Vercel env vars) | No — `db:seed` refuses to run here |
+| `main` (default) | Production — deployed app (Vercel env vars) | No — `db:seed` refuses to run here |
 | `dev` | Local development for both roles (permanent, set in `neon.ts`) | Yes |
 
 - Switch with `neon checkout <branch>` — it rewrites the Neon vars in `.env.local`.

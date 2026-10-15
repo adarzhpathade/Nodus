@@ -90,8 +90,9 @@ async function ensureAuthUser(pool: Pool, person: { name: string; email: string 
 
 async function main() {
   const branch = process.env.NEON_BRANCH ?? "unknown";
-  if (branch === "production" && !args.has("--allow-production")) {
-    throw new Error('Refusing to wipe the "production" branch. Run on "dev" (neon checkout dev) or pass --allow-production.');
+  // The default branch ("main" in this project, "production" in older ones) is what the deployed app uses.
+  if ((branch === "main" || branch === "production") && !args.has("--allow-production")) {
+    throw new Error(`Refusing to wipe the "${branch}" branch (production data). Run on "dev" (neon checkout dev) or pass --allow-production.`);
   }
   const url = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL_UNPOOLED is not set — run `neon env pull`.");
