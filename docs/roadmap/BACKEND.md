@@ -13,10 +13,10 @@
 
 | Phase | Name | Weeks | Tasks | Done |
 |---|---|---|---|---|
-| BE-0 | Backend docs | 1 | 5 | 0 |
+| BE-0 | Backend docs | 1 | 5 | 2 |
 | BOOT | Repo bootstrap (on `main`, before split) | 1 | 12 | 10 |
 | BE-1 | Contract sprint | 2 | 14 | 13 |
-| BE-2 | Database & seed | 2–3 | 9 | 1 |
+| BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 1 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 0 |
 | BE-5 | Notes | 5 | 8 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **25** |
+| | **Total** | | **109** | **35** |
 
 ---
 
@@ -35,11 +35,11 @@
 
 | ID | Task | Pri | Done when | Status |
 |---|---|---|---|---|
-| BE-0.1 | `docs/database_schema.md` + Mermaid ER diagram | P0 | All tables (AGENTS.md §7) with columns, keys, relations | ⬜ |
+| BE-0.1 | `docs/database_schema.md` + Mermaid ER diagram | P0 | All tables (AGENTS.md §7) with columns, keys, relations | ✅ |
 | BE-0.2 | `docs/architecture.md` (system + RAG pipeline diagrams) | P0 | Diagrams render; gateway/mock pattern explained | ⬜ |
 | BE-0.3 | `docs/progress_logic.md` with 3 worked examples | P0 | Matches AGENTS.md §6.6 | ⬜ |
 | BE-0.4 | DFD (L0–L2) + sequence diagrams (tutor question, faculty marking, upload ingestion) | P1 | In `docs/architecture.md` or `docs/diagrams.md` | ⬜ |
-| BE-0.5 | `docs/environment_setup.md` skeleton (accounts, env vars, commands) | P0 | Steps to run locally | ⬜ |
+| BE-0.5 | `docs/environment_setup.md` skeleton (accounts, env vars, commands) | P0 | Steps to run locally | ✅ |
 
 ---
 
@@ -91,15 +91,15 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-2.1 | Neon project, enable `pgvector`, dev + prod branches | P0 | H-06 | `DATABASE_URL` works | 🟡 Project linked (`neon.ts`), pgvector enabled via migration 0000; `dev` branch not created yet |
+| BE-2.1 | Neon project, enable `pgvector`, dev + prod branches | P0 | H-06 | `DATABASE_URL` works | ✅ `production` + permanent `dev` branch (`neon.ts`), pgvector on both |
 | BE-2.2 | Drizzle config + client + migration scripts | P0 | BOOT | `db:generate/migrate/studio` work | ✅ |
 | BE-2.3 | Schema: users, student_profiles, branches, semesters, subjects, subject_prerequisites, units, topics, faculty map | P0 | BE-2.2 | Migrated | ✅ |
-| BE-2.4 | Schema: resources, resource_chunks (vector + index) | P0 | BE-2.3 | Migrated | ⬜ |
-| BE-2.5 | Schema: notes, note_chunks, note_links | P0 | BE-2.3 | Migrated | ⬜ |
-| BE-2.6 | Schema: assignments, assignment_sections, assignment_status | P0 | BE-2.3 | Migrated | ⬜ |
-| BE-2.7 | Schema: quizzes, quiz_attempts, ai_conversations, ai_messages, note_analyses, activity_log, notifications | P0 | BE-2.3 | Migrated | ⬜ |
-| BE-2.8 | Seed script (AGENTS.md §17), using real syllabus if provided (H-05) | P0 | BE-2.3…2.7 | `db:seed` fills realistic data | ⬜ |
-| BE-2.9 | Demo logins in `docs/environment_setup.md` | P0 | BE-2.8 | Listed | ⬜ |
+| BE-2.4 | Schema: resources, resource_chunks (vector + index) | P0 | BE-2.3 | Migrated | ✅ |
+| BE-2.5 | Schema: notes, note_chunks, note_links | P0 | BE-2.3 | Migrated | ✅ |
+| BE-2.6 | Schema: assignments, assignment_sections, assignment_status | P0 | BE-2.3 | Migrated | ✅ |
+| BE-2.7 | Schema: quizzes, quiz_attempts, ai_conversations, ai_messages, note_analyses, activity_log, notifications | P0 | BE-2.3 | Migrated | ✅ |
+| BE-2.8 | Seed script (AGENTS.md §17), using real syllabus if provided (H-05) | P0 | BE-2.3…2.7 | `db:seed` fills realistic data | ✅ |
+| BE-2.9 | Demo logins in `docs/environment_setup.md` | P0 | BE-2.8 | Listed | ✅ |
 
 ---
 

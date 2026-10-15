@@ -1,2 +1,9 @@
-// Drizzle table definitions are exported from here (BE-2.3 … BE-2.7).
-export {};
+// All Drizzle tables. Docs: docs/database_schema.md. Owner: BE.
+export * from "./_shared";
+export * from "./curriculum";
+export * from "./users";
+export * from "./resources";
+export * from "./notes";
+export * from "./assignments";
+export * from "./ai";
+export * from "./activity";

@@ -309,7 +309,7 @@ High-level tables (Drizzle). Exact columns live in `docs/database_schema.md` and
 
 | Table | Purpose | Key columns |
 |---|---|---|
-| `users` | Auth user + role | id, name, email, role (`student` / `faculty`), avatar |
+| `users` | App user (id = Neon Auth user id) + role | id, name, email, role (`student` / `faculty`), image |
 | `student_profiles` | Student academic info | user_id, branch_id, current_semester, section |
 | `branches` | e.g. CSE, IT | id, name, code |
 | `semesters` | 1–8 per branch | id, branch_id, number |
@@ -317,7 +317,7 @@ High-level tables (Drizzle). Exact columns live in `docs/database_schema.md` and
 | `subject_prerequisites` | Prerequisite edges | subject_id, prerequisite_subject_id |
 | `units` | Units in a subject | id, subject_id, title, order |
 | `topics` | Faculty-defined topics in a unit | id, unit_id, title, order |
-| `faculty_assignments_map` | Which faculty teaches what | faculty_id, subject_id, section |
+| `faculty_teaching` | Which faculty teaches what | faculty_id, subject_id, section |
 | `resources` | Faculty uploads | id, unit_id, uploaded_by, file_url, file_name, type, visible_sections |
 | `resource_chunks` | RAG chunks of uploads | id, resource_id, content, page_or_slide, embedding (vector) |
 | `notes` | Student notes | id, owner_id, topic_id, title, content_md, content_json, updated_at |
@@ -325,7 +325,7 @@ High-level tables (Drizzle). Exact columns live in `docs/database_schema.md` and
 | `note_links` | Links between notes/topics/units | id, from_note_id, to_type (`note`/`topic`/`unit`), to_id |
 | `assignments` | Faculty-created assignments | id, subject_id, unit_id, title, description, due_at, created_by |
 | `assignment_sections` | Target sections | assignment_id, section |
-| `assignment_status` | Offline marking | assignment_id, student_id, status, marks, remark, marked_at |
+| `assignment_status` | Offline marking (no row = pending) | assignment_id, student_id, status, marks, remark, marked_by, marked_at |
 | `quizzes` | Generated quizzes (cached) | id, unit_id, topic_id, questions_json, created_at |
 | `quiz_attempts` | Student attempts | id, quiz_id, student_id, score, answers_json, attempted_at |
 | `ai_conversations` | Tutor chats | id, student_id, unit_id (optional), created_at |
