@@ -366,8 +366,10 @@ Rules:
 | `/practice` | Practice quizzes and past scores |
 | `/profile` | Profile and settings |
 
-**Sidebar:** Dashboard · Graph View · Subjects · My Notes · Assignments · AI Tutor · Practice
-**Top bar:** Semester switcher · Search (Ctrl+K) · Notifications · Profile
+**Navigation: top nav only — no sidebar anywhere in the app.**
+**Top nav links:** Dashboard · Graph View · Subjects · My Notes · Assignments · AI Tutor · Practice
+**Top nav controls:** Semester switcher · Search (Ctrl+K) · Notifications · Profile
+On small screens the links collapse into a menu; the exact look follows the provided design.
 
 ### Faculty
 | Route | Page |
@@ -379,7 +381,8 @@ Rules:
 | `/faculty/assignments/[id]` | Mark students (Submitted / Late / Not submitted) |
 | `/faculty/tracker` | Section-wise submission and progress tracker |
 
-**Top bar:** Subject + Section switcher · Notifications · Profile
+**Top nav links:** Dashboard · Graph View · Content · Assignments · Tracker
+**Top nav controls:** Subject + Section switcher · Notifications · Profile
 
 ---
 

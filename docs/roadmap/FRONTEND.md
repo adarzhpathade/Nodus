@@ -69,8 +69,8 @@
 |---|---|---|---|---|---|
 | FE-3.1 | Login + signup pages | P0 | FE-1.2 | Calls auth actions | ⬜ |
 | FE-3.2 | Student onboarding (branch, semester, section) | P0 | FE-3.1 | Submits onboarding action | ⬜ |
-| FE-3.3 | Student shell: sidebar (7 items), top bar, breadcrumbs | P0 | FE-1.2 | All student routes reachable (placeholders) | ⬜ |
-| FE-3.4 | Faculty shell: sidebar + top bar | P0 | FE-1.2 | All faculty routes reachable | ⬜ |
+| FE-3.3 | Student shell: top nav (7 links + semester switcher, search, bell, profile), breadcrumbs, mobile menu — **no sidebar** | P0 | FE-1.2 | All student routes reachable (placeholders) | ⬜ |
+| FE-3.4 | Faculty shell: top nav (5 links + subject/section switcher, bell, profile), mobile menu — **no sidebar** | P0 | FE-1.2 | All faculty routes reachable | ⬜ |
 | FE-3.5 | Semester switcher (locked future semesters with lock icon) | P0 | FE-3.3 | Selection changes page data | ⬜ |
 | FE-3.6 | Subject + Section switcher (faculty) | P0 | FE-3.4 | Selection changes page data | ⬜ |
 | FE-3.7 | Route transitions for the shell | P1 | FE-1.3 | Shell stays, content transitions | ⬜ |
