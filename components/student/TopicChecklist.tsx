@@ -96,38 +96,29 @@ export function TopicChecklist({ topics, unitId }: TopicChecklistProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    asChild
                     className="h-8 gap-1.5 text-xs font-medium"
-                  >
-                    <Link href={`/notes?topic=${topic.topicId}`}>
+                   render={<Link href={`/notes?topic=${topic.topicId}`} />}>
                       <FileText className="size-3.5" />
                       <span>View Notes</span>
-                    </Link>
-                  </Button>
+                    </Button>
                 ) : (
                   <Button
                     variant="secondary"
                     size="sm"
-                    asChild
                     className="h-8 gap-1.5 text-xs font-medium"
-                  >
-                    <Link href={`/notes/new?topicId=${topic.topicId}`}>
+                   render={<Link href={`/notes/new?topicId=${topic.topicId}`} />}>
                       <Plus className="size-3.5" />
                       <span>Add Note</span>
-                    </Link>
-                  </Button>
+                    </Button>
                 )}
 
                 <Button
                   variant="ghost"
                   size="sm"
-                  asChild
                   className="h-8 text-xs font-medium text-muted-foreground hover:text-foreground"
-                >
-                  <Link href={`/practice?unitId=${unitId}&topicId=${topic.topicId}`}>
+                 render={<Link href={`/practice?unitId=${unitId}&topicId=${topic.topicId}`} />}>
                     Quiz
-                  </Link>
-                </Button>
+                  </Button>
               </div>
             </li>
           );

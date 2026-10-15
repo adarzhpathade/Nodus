@@ -108,14 +108,11 @@ export function SubjectCard({
           <Button
             variant="ghost"
             size="sm"
-            asChild
             className="h-8 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <Link href="/graph">
+           render={<Link href="/graph" />}>
               <span>View in Graph</span>
               <ArrowUpRight className="size-3.5" />
-            </Link>
-          </Button>
+            </Button>
         </div>
 
         {isExpanded && (

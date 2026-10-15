@@ -62,14 +62,11 @@ export default async function UnitPage({ params }: UnitPageProps) {
           <Button
             variant="ghost"
             size="sm"
-            asChild
             className="-ml-2 h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <Link href="/subjects">
+           render={<Link href="/subjects" />}>
               <ArrowLeft className="size-3.5" />
               <span>Back to Subjects</span>
-            </Link>
-          </Button>
+            </Button>
 
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border/60 pb-6">
             <div className="space-y-2">
@@ -89,27 +86,21 @@ export default async function UnitPage({ params }: UnitPageProps) {
             {/* Quick Action Buttons */}
             <div className="flex flex-wrap items-center gap-2.5">
               <Button
-                asChild
                 size="sm"
                 className="h-9 gap-1.5 text-xs font-medium"
-              >
-                <Link href={`/tutor?unitId=${unit.id}`}>
+               render={<Link href={`/tutor?unitId=${unit.id}`} />}>
                   <Sparkles className="size-3.5" />
                   <span>Ask AI Tutor</span>
-                </Link>
-              </Button>
+                </Button>
 
               <Button
                 variant="outline"
                 size="sm"
-                asChild
                 className="h-9 gap-1.5 text-xs font-medium"
-              >
-                <Link href={`/practice?unitId=${unit.id}`}>
+               render={<Link href={`/practice?unitId=${unit.id}`} />}>
                   <HelpCircle className="size-3.5" />
                   <span>Practice Quiz</span>
-                </Link>
-              </Button>
+                </Button>
             </div>
           </div>
         </div>
@@ -232,13 +223,10 @@ export default async function UnitPage({ params }: UnitPageProps) {
               <Button
                 variant="outline"
                 size="sm"
-                asChild
                 className="w-full text-xs font-medium"
-              >
-                <Link href={`/tutor?unitId=${unit.id}`}>
+               render={<Link href={`/tutor?unitId=${unit.id}`} />}>
                   Chat with Unit Tutor
-                </Link>
-              </Button>
+                </Button>
             </CardContent>
           </Card>
         </div>

@@ -69,19 +69,16 @@ export function UnitAssignmentCard({ assignment }: UnitAssignmentCardProps) {
 
         <div className="flex items-center justify-between border-t border-border/60 pt-3">
           <span className="text-xs text-muted-foreground">
-            Target Section {assignment.targetSection}
+            Due {new Date(assignment.dueAt).toLocaleDateString()}
           </span>
           <Button
             variant="ghost"
             size="sm"
-            asChild
             className="h-8 gap-1 text-xs text-primary hover:text-primary/90"
-          >
-            <Link href="/assignments">
+           render={<Link href="/assignments" />}>
               <span>View all assignments</span>
               <ArrowRight className="size-3.5" />
-            </Link>
-          </Button>
+            </Button>
         </div>
       </CardContent>
     </Card>

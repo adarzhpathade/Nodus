@@ -30,12 +30,10 @@ export default function UnitError({
           <RotateCcw className="size-4" />
           <span>Try again</span>
         </Button>
-        <Button asChild variant="ghost" className="gap-2">
-          <Link href="/subjects">
+        <Button variant="ghost" className="gap-2" render={<Link href="/subjects" />}>
             <ArrowLeft className="size-4" />
             <span>Back to Subjects</span>
-          </Link>
-        </Button>
+          </Button>
       </div>
     </div>
   );
