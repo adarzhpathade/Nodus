@@ -15,7 +15,7 @@
 |---|---|---|---|---|
 | BE-0 | Backend docs | 1 | 5 | 2 |
 | BOOT | Repo bootstrap (on `main`, before split) | 1 | 12 | 10 |
-| BE-1 | Contract sprint | 2 | 14 | 13 |
+| BE-1 | Contract sprint | 2 | 14 | 14 |
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 6 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 0 |
@@ -27,7 +27,7 @@
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **40** |
+| | **Total** | | **109** | **41** |
 
 ---
 
@@ -83,7 +83,7 @@
 | BE-1.11 | Server action stubs in `lib/actions/*` for every mutation (validate with Zod → call `getGateway()`) | P0 | FE can import every action | ✅ |
 | BE-1.12 | API route stubs (`app/api/ai/tutor`, `app/api/upload`, `app/api/cron/reminders`) returning mock stream/data when flagged | P0 | Routes respond in mock mode | ✅ |
 | BE-1.13 | `docs/api_contract.md` generated/written from contracts | P0 | Every function + action + route listed | ✅ |
-| BE-1.14 | FE review done → merge `contract/v1` → tag `contracts-v1` | P0 | FE approved | 🟡 PR `contract/v1` open — waiting for FE review |
+| BE-1.14 | FE review done → merge `contract/v1` → tag `contracts-v1` | P0 | FE approved | ✅ Approved by FE (FE-1.7), tagged `contracts-v1` |
 
 ---
 
