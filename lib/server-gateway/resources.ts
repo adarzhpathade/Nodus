@@ -31,6 +31,7 @@ import {
   type ResourceRecord,
 } from "@/lib/db/queries/resources";
 import { logActivity } from "@/lib/db/queries/activity";
+import { notifyNewResource } from "@/lib/db/queries/notifications";
 import { getStorage } from "@/lib/storage";
 import { ingestResource } from "@/lib/ai/rag/ingest";
 
@@ -206,6 +207,20 @@ export const resourcesApi: ResourcesApi = {
 
     try {
       waitUntil(ingestionPromise);
+    } catch {
+      // Outside Vercel runtime
+    }
+
+    const notificationPromise = notifyNewResource(
+      input.unitId,
+      input.visibleSections,
+      input.file.name,
+    ).catch((err) => {
+      console.error(`[nodus] background notification error for resource ${record.id}:`, err);
+    });
+
+    try {
+      waitUntil(notificationPromise);
     } catch {
       // Outside Vercel runtime
     }

@@ -6,11 +6,9 @@ import {
   assignmentSections,
   assignments,
   assignmentStatus,
-  notes,
   semesters,
   studentProfiles,
   subjects,
-  topics,
   units,
   users,
 } from "@/lib/db/schema";
@@ -728,94 +726,3 @@ export async function bulkUpsertMarkingStatusRecord(params: {
   });
 }
 
-/**
- * Calculates progress percent for a list of students in a subject based on AGENTS.md §6.6.
- */
-export async function calculateStudentsSubjectProgress(
-  subjectId: string,
-  studentIds: string[],
-): Promise<Map<string, number>> {
-  const db = getDb();
-  const progressMap = new Map<string, number>();
-  for (const id of studentIds) progressMap.set(id, 0);
-
-  if (!studentIds.length) return progressMap;
-
-  // 1. Get units and topics in this subject
-  const unitRows = await db
-    .select({ unitId: units.id })
-    .from(units)
-    .where(eq(units.subjectId, subjectId));
-
-  if (!unitRows.length) return progressMap;
-
-  const unitIds = unitRows.map((u) => u.unitId);
-  const topicRows = await db
-    .select({ topicId: topics.id, unitId: topics.unitId })
-    .from(topics)
-    .where(inArray(topics.unitId, unitIds));
-
-  if (!topicRows.length) return progressMap;
-
-  const topicsByUnit = new Map<string, string[]>();
-  for (const t of topicRows) {
-    const list = topicsByUnit.get(t.unitId) ?? [];
-    list.push(t.topicId);
-    topicsByUnit.set(t.unitId, list);
-  }
-
-  const allTopicIds = topicRows.map((t) => t.topicId);
-
-  // 2. Query notes count per student and topic
-  const noteRows = await db
-    .select({
-      studentId: notes.ownerId,
-      topicId: notes.topicId,
-    })
-    .from(notes)
-    .where(
-      and(
-        inArray(notes.ownerId, studentIds),
-        inArray(notes.topicId, allTopicIds),
-      ),
-    );
-
-  const studentTopicNotes = new Map<string, Set<string>>();
-  for (const n of noteRows) {
-    let set = studentTopicNotes.get(n.studentId);
-    if (!set) {
-      set = new Set();
-      studentTopicNotes.set(n.studentId, set);
-    }
-    set.add(n.topicId);
-  }
-
-  // 3. Compute subject % per student
-  for (const studentId of studentIds) {
-    const coveredTopicSet = studentTopicNotes.get(studentId) ?? new Set();
-
-    let unitSum = 0;
-    let unitsWithTopics = 0;
-
-    for (const unitId of unitIds) {
-      const unitTopics = topicsByUnit.get(unitId) ?? [];
-      if (!unitTopics.length) continue;
-      unitsWithTopics++;
-
-      let covered = 0;
-      for (const tId of unitTopics) {
-        if (coveredTopicSet.has(tId)) covered++;
-      }
-
-      const unitCoverage = covered / unitTopics.length;
-      // Unit % = 0.7 * unitCoverage * 100 (if no quiz attempted)
-      const unitPercent = unitCoverage * 70;
-      unitSum += unitPercent;
-    }
-
-    const subjectPercent = unitsWithTopics > 0 ? unitSum / unitsWithTopics : 0;
-    progressMap.set(studentId, Math.round(subjectPercent * 10) / 10);
-  }
-
-  return progressMap;
-}

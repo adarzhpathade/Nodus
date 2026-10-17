@@ -25,9 +25,10 @@ import { getDb } from "@/lib/db";
 import { assignmentStatus, studentProfiles, users } from "@/lib/db/schema";
 import { findSubject, findUnitById } from "@/lib/db/queries/curriculum";
 import { findUserWithProfile } from "@/lib/db/queries/users";
+import { calculateSubjectProgress, calculateUnitProgress } from "@/lib/progress";
+import { getSectionProgressRawData } from "@/lib/db/queries/progress";
 import {
   bulkUpsertMarkingStatusRecord,
-  calculateStudentsSubjectProgress,
   deleteAssignmentRecord,
   findAssignmentById,
   findStudentAssignment,
@@ -302,7 +303,7 @@ export const assignmentsApi: AssignmentsApi = {
   // ---------- Marking (BE-8.2, BE-8.3) ----------
 
   async getMarkingSheet(input: { assignmentId: string; section: string }): Promise<MarkingSheet> {
-    const faculty = await requireFaculty();
+    await requireFaculty();
     const assignment = await findAssignmentById(input.assignmentId);
     if (!assignment) throw new GatewayError("NOT_FOUND", "Assignment not found.");
 
@@ -477,7 +478,7 @@ export const assignmentsApi: AssignmentsApi = {
   // ---------- Section Tracker (BE-8.5) ----------
 
   async getSectionTracker(input: { subjectId: string; section: string }): Promise<SectionTracker> {
-    const faculty = await requireFaculty();
+    await requireFaculty();
     await requireFacultyTeaches(input.subjectId, input.section);
 
     const subject = await findSubject(input.subjectId);
@@ -536,10 +537,46 @@ export const assignmentsApi: AssignmentsApi = {
       }
     }
 
-    const progressMap = await calculateStudentsSubjectProgress(
-      input.subjectId,
-      studentIds,
-    );
+    const rawProgress = await getSectionProgressRawData(input.subjectId, input.section);
+
+    const progressMap = new Map<string, number>();
+    for (const student of students) {
+      if (!rawProgress || rawProgress.units.length === 0) {
+        progressMap.set(student.studentId, 0);
+        continue;
+      }
+
+      const stNotes = rawProgress.noteCountsByStudentAndTopic.get(student.studentId);
+      const stBestScores = rawProgress.bestTopicScoresByStudent.get(student.studentId);
+      const stUnitScores = rawProgress.unitScoresByStudentAndUnit.get(student.studentId);
+
+      const unitProgresses = rawProgress.units.map((unit) => {
+        const quizScores = stUnitScores?.get(unit.id) ?? [];
+        return calculateUnitProgress({
+          unitId: unit.id,
+          topics: unit.topics.map((t) => ({
+            topicId: t.id,
+            title: t.title,
+            order: t.order,
+            noteCount: stNotes?.get(t.id) ?? 0,
+            bestQuizScore: stBestScores?.get(t.id) ?? null,
+          })),
+          quizScores,
+        });
+      });
+
+      const subjectProg = calculateSubjectProgress({
+        subjectId: input.subjectId,
+        units: unitProgresses.map((u, i) => ({
+          id: u.unitId,
+          title: rawProgress.units[i]?.title ?? "",
+          percent: u.percent,
+          status: u.status,
+        })),
+      });
+
+      progressMap.set(student.studentId, subjectProg.percent);
+    }
 
     const studentRows: TrackerStudentRow[] = students.map((student) => {
       let submitted = 0;
