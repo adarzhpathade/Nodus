@@ -142,7 +142,7 @@
 | BE-5.3 | Links by ID (note/topic/unit) + backlinks query | P0 | BE-5.1 | Rename never breaks links | ✅ addLink/removeLink, diff sync on save from `nodus://` hrefs, backlinks with snippets, link preview |
 | BE-5.4 | Full-text search + tags | P1 | BE-5.1 | Search returns own notes only | ✅ `search_vector` GIN index + ILIKE fallback, tag array filter, `listTags()` |
 | BE-5.5 | Quick-switcher search (notes, units, topics) | P1 | BE-5.4 | One query returns mixed results | ✅ Ctrl+K ranked search across notes, topics, units, subjects in semester |
-| BE-5.6 | Note chunking + embeddings (debounced / background) | P0 | BE-4.6 | `note_chunks` updated after edits | ⬜ Skipped for now (needs the Gemini key); not started |
+| BE-5.6 | Note chunking + embeddings (debounced / background) | P0 | BE-4.6 | `note_chunks` updated after edits | ✅ `rechunkAndEmbedNote()` chunks & embeds on note save in background (`waitUntil`), replaces `note_chunks` |
 | BE-5.7 | Markdown export route + `note_created/updated` activity | P1 | BE-5.1 | `.md` download; activity rows | ✅ `exportMarkdown()` (.md filename + content), `activity_log` rows with 10-minute throttling for updates |
 | BE-5.8 | **INT-3** support | P0 | FE-5.x | Notes run with real data | 🟡 Ready for integration with FE |
 
@@ -166,17 +166,17 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-7.1 | `lib/ai/config.ts` (provider, models, embedding dim) + `prompts/` + `schemas.ts` | P0 | BOOT | Single source for models/prompts | ⬜ |
-| BE-7.2 | Retrieval: vector search over resource + own note chunks with scope & permission filters | P0 | BE-4.6, BE-5.6 | Only allowed chunks returned | ⬜ |
-| BE-7.3 | `app/api/ai/tutor` streaming with citations | P0 | BE-7.2 | Stream + citation IDs (C-07) | ⬜ |
-| BE-7.4 | "Not covered" fallback when retrieval is weak | P0 | BE-7.3 | Off-syllabus question → fallback | ⬜ |
-| BE-7.5 | Save conversations/messages + `ai_question` activity | P1 | BE-7.3 | History persists | ⬜ |
-| BE-7.6 | Quiz generation (unit/topic) + cache | P0 | BE-7.1 | Valid Zod-checked quiz stored | ⬜ |
-| BE-7.7 | Quiz attempts → score → progress update | P0 | BE-7.6, BE-6.1 | Progress changes after attempt | ⬜ |
-| BE-7.8 | Analyze Note + cache by content hash | P0 | BE-7.1 | Cached until note changes | ⬜ |
-| BE-7.9 | Gap finder (progress + AI explanation) | P0 | BE-6.1, BE-7.2 | Missing topics with reasons | ⬜ |
-| BE-7.10 | Rate-limit / provider error handling → typed `AiError` | P0 | BE-7.3 | No crashes on quota | ⬜ |
-| BE-7.11 | **INT-5** support (+ optional Groq fallback, P2) | P0 | FE-7.x | AI runs for real | ⬜ |
+| BE-7.1 | `lib/ai/config.ts` (provider, models, embedding dim) + `prompts/` + `schemas.ts` | P0 | BOOT | Single source for models/prompts | ✅ Config with Gemini + Groq fallback, typed schemas, modular prompts |
+| BE-7.2 | Retrieval: vector search over resource + own note chunks with scope & permission filters | P0 | BE-4.6, BE-5.6 | Only allowed chunks returned | ✅ `lib/ai/rag/retrieve.ts` pgvector cosine distance, scope/branch/section filters, private notes |
+| BE-7.3 | `app/api/ai/tutor` streaming with citations | P0 | BE-7.2 | Stream + citation IDs (C-07) | ✅ Streaming UI message stream with `[S1]`, `[S2]` citation metadata |
+| BE-7.4 | "Not covered" fallback when retrieval is weak | P0 | BE-7.3 | Off-syllabus question → fallback | ✅ Distance threshold check + syllabus suggestion |
+| BE-7.5 | Save conversations/messages + `ai_question` activity | P1 | BE-7.3 | History persists | ✅ `ai_conversations`, `ai_messages`, best matching `topicId`, `logActivity` |
+| BE-7.6 | Quiz generation (unit/topic) + cache | P0 | BE-7.1 | Valid Zod-checked quiz stored | ✅ `generateQuizService` from faculty chunks, 4 options, explanations, cached |
+| BE-7.7 | Quiz attempts → score → progress update | P0 | BE-7.6, BE-6.1 | Progress changes after attempt | ✅ Scored, saved to `quiz_attempts`, activity logged; progress update has `TODO(BE-6)` seam |
+| BE-7.8 | Analyze Note + cache by content hash | P0 | BE-7.1 | Cached until note changes | ✅ `analyzeNoteService` cached by SHA-256 hash in `note_analyses` |
+| BE-7.9 | Gap finder (progress + AI explanation) | P0 | BE-6.1, BE-7.2 | Missing topics with reasons | ✅ Missing & weak topics with AI explanations; coverage signal has `TODO(BE-6)` seam |
+| BE-7.10 | Rate-limit / provider error handling → typed `AiError` | P0 | BE-7.3 | No crashes on quota | ✅ `mapAiError` maps 429 to `RATE_LIMITED` with `retryAfterSeconds: 60`, others to `AI_UNAVAILABLE` |
+| BE-7.11 | **INT-5** support (+ optional Groq fallback, P2) | P0 | FE-7.x | AI runs for real | 🟡 Ready for integration with FE (aiApi wired into serverGateway) |
 
 ---
 

@@ -3,6 +3,7 @@ import "server-only";
 import { and, asc, desc, eq, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import {
+  noteChunks,
   noteLinks,
   notes,
   semesters,
@@ -10,6 +11,9 @@ import {
   topics,
   units,
 } from "@/lib/db/schema";
+import { waitUntil } from "@vercel/functions";
+import { chunkText } from "@/lib/ai/rag/chunk";
+import { generateEmbeddings } from "@/lib/ai/rag/embed";
 import type { SyllabusLocation } from "@/contracts/common";
 
 export type NoteRecord = typeof notes.$inferSelect;
@@ -211,6 +215,15 @@ export async function insertNote(data: InsertNoteInput): Promise<NoteRecord> {
       tags: data.tags ?? [],
     })
     .returning();
+
+  if (created && created.contentMd && created.contentMd.trim()) {
+    try {
+      waitUntil(rechunkAndEmbedNote(created.id, created.contentMd));
+    } catch {
+      rechunkAndEmbedNote(created.id, created.contentMd).catch(() => {});
+    }
+  }
+
   return created;
 }
 
@@ -244,6 +257,14 @@ export async function updateNoteRecord(
     .set(valuesToSet)
     .where(and(eq(notes.id, noteId), eq(notes.ownerId, ownerId)))
     .returning();
+
+  if (updated && fields.contentMd !== undefined) {
+    try {
+      waitUntil(rechunkAndEmbedNote(updated.id, fields.contentMd));
+    } catch {
+      rechunkAndEmbedNote(updated.id, fields.contentMd).catch(() => {});
+    }
+  }
 
   return updated ?? null;
 }
@@ -594,3 +615,50 @@ export async function countOwnerNotesInTopic(
 
   return row?.count ? Number(row.count) : 0;
 }
+
+/**
+ * Re-chunks and embeds a note's markdown content into note_chunks (BE-5.6).
+ * Atomically replaces all existing chunks for this note.
+ */
+export async function rechunkAndEmbedNote(
+  noteId: string,
+  contentMd: string,
+): Promise<void> {
+  if (!UUID_RE.test(noteId)) return;
+
+  const db = getDb();
+  const trimmed = contentMd.trim();
+
+  // If note has no content, remove existing chunks
+  if (!trimmed) {
+    await db.delete(noteChunks).where(eq(noteChunks.noteId, noteId));
+    return;
+  }
+
+  // 1. Chunk content into ~500–800 token pieces
+  const chunks = chunkText(trimmed);
+  if (chunks.length === 0) {
+    await db.delete(noteChunks).where(eq(noteChunks.noteId, noteId));
+    return;
+  }
+
+  // 2. Compute Gemini embeddings (skips / returns null when key is missing)
+  const embeddings = await generateEmbeddings(chunks).catch((err) => {
+    console.warn(`[nodus] failed to generate note embeddings for note ${noteId}:`, err);
+    return null;
+  });
+
+  // 3. Atomically replace the note's note_chunks in database
+  await db.transaction(async (tx) => {
+    await tx.delete(noteChunks).where(eq(noteChunks.noteId, noteId));
+    await tx.insert(noteChunks).values(
+      chunks.map((content, idx) => ({
+        noteId,
+        chunkIndex: idx,
+        content,
+        embedding: embeddings ? embeddings[idx] ?? null : null,
+      })),
+    );
+  });
+}
+

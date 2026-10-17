@@ -8,6 +8,7 @@ import { curriculumApi } from "./curriculum";
 import { graphApi } from "./graph";
 import { notesApi } from "./notes";
 import { resourcesApi } from "./resources";
+import { aiApi } from "./ai";
 
 export const serverGateway: NodusGateway = {
   auth: authApi, // BE-3.4 / 3.5
@@ -15,7 +16,7 @@ export const serverGateway: NodusGateway = {
   resources: resourcesApi, // BE-4.3 … 4.8
   notes: notesApi, // BE-5.1 … 5.5, BE-5.7
   graph: graphApi, // BE-6.1 … 6.5, BE-6.7
-  ai: unimplementedApi("ai", "real"),
+  ai: aiApi, // BE-7.1 … BE-7.10
   assignments: unimplementedApi("assignments", "real"),
   dashboard: unimplementedApi("dashboard", "real"),
   notifications: unimplementedApi("notifications", "real"),
