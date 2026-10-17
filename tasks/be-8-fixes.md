@@ -1,0 +1,6 @@
+# Task: be-8-fixes (Gemini, BACKEND) - review fixes, round 1
+Work ONLY in E:\Projects\College Projects\nodus-be8. No shell or git; file tools only. Fix exactly these:
+1. lib/db/queries/assignments.ts: `topics` and `notes` are used (around lines 750-780, in calculateStudentsSubjectProgress) but not imported from "@/lib/db/schema". Add them to the existing schema import. (This function is replaced in round 2, so only fix the import for now.)
+2. lib/server-gateway/assignments.ts: re-read every method and confirm each starts with the right guard (student methods requireStudent + assertSemesterOpen on the assignment's subject semester; faculty methods requireFacultyTeaches for the assignment's subject AND each target section). If any method misses a check, add it. In createAssignment/updateAssignment reject sections the faculty does not teach for that subject (FORBIDDEN).
+3. lib/db/queries/notifications.ts `createDeadlineReminders`: confirm it is idempotent per (student, assignment, kind) by checking existing notification rows before inserting; if the check only looks at the assignment but not the kind ("2 days" vs "today"), fix it so both reminders can be sent once each.
+Do not change anything else. End with a Report listing what you changed and what you verified was already correct.
