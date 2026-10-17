@@ -1,6 +1,6 @@
 // AI database queries (conversations, messages, quizzes, attempts, analyses). Owner: BE.
 import "server-only";
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { TutorScope } from "@/contracts/ai";
 import { getDb } from "@/lib/db";
 import {

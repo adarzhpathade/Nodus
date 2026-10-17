@@ -1,15 +1,17 @@
 // Gap Finder service (BE-7.9). Owner: BE.
 import "server-only";
 import { generateObject } from "ai";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import type { GapItem, GapReport, GapReportInput } from "@/contracts/ai";
 import { GatewayError } from "@/contracts/common";
 import type { OnboardedStudent } from "@/lib/auth/guards";
-import { getChatModel, mapAiError } from "@/lib/ai/config";
+import { getChatModel } from "@/lib/ai/config";
 import { buildGapSystemPrompt, buildGapUserPrompt, type TopicNoteSummary } from "@/lib/ai/prompts";
 import { GapReportGeneratedSchema } from "@/lib/ai/schemas";
 import { getDb } from "@/lib/db";
-import { notes, semesters, subjects, topics, units } from "@/lib/db/schema";
+import { getStudentUnitProgressRawData } from "@/lib/db/queries/progress";
+import { notes } from "@/lib/db/schema";
+import { calculateUnitProgress } from "@/lib/progress";
 
 export async function getGapReportService(
   student: OnboardedStudent,
@@ -17,35 +19,16 @@ export async function getGapReportService(
 ): Promise<GapReport> {
   const db = getDb();
 
-  // 1. Verify unit location and permissions
-  const [unitRow] = await db
-    .select({
-      unitId: units.id,
-      unitTitle: units.title,
-      semesterNumber: semesters.number,
-      branchId: semesters.branchId,
-    })
-    .from(units)
-    .innerJoin(subjects, eq(subjects.id, units.subjectId))
-    .innerJoin(semesters, eq(semesters.id, subjects.semesterId))
-    .where(eq(units.id, input.unitId))
-    .limit(1);
-
-  if (!unitRow || unitRow.branchId !== student.profile.branch.id) {
+  // 1. Fetch raw progress and curriculum data for this student and unit
+  const raw = await getStudentUnitProgressRawData(student.user.id, input.unitId);
+  if (!raw || raw.subject.branchId !== student.profile.branch.id) {
     throw new GatewayError("NOT_FOUND", "Unit not found.");
   }
-  if (unitRow.semesterNumber > student.profile.currentSemester) {
-    throw new GatewayError("LOCKED", `Semester ${unitRow.semesterNumber} is locked.`);
+  if (raw.subject.semesterNumber > student.profile.currentSemester) {
+    throw new GatewayError("LOCKED", `Semester ${raw.subject.semesterNumber} is locked.`);
   }
 
-  // 2. Fetch all topics in this unit
-  const unitTopics = await db
-    .select({ id: topics.id, title: topics.title, order: topics.order })
-    .from(topics)
-    .where(eq(topics.unitId, input.unitId))
-    .orderBy(asc(topics.order));
-
-  if (unitTopics.length === 0) {
+  if (raw.topics.length === 0) {
     return {
       unitId: input.unitId,
       missing: [],
@@ -56,8 +39,23 @@ export async function getGapReportService(
     };
   }
 
-  // 3. Fetch student's notes for topics in this unit
-  const topicIds = unitTopics.map((t) => t.id);
+  // 2. Real unit progress calculation (including quiz scores & notes rule from lib/progress)
+  const unitProgress = calculateUnitProgress({
+    unitId: raw.unit.id,
+    topics: raw.topics.map((t) => ({
+      topicId: t.id,
+      title: t.title,
+      order: t.order,
+      noteCount: raw.noteCountsByTopic.get(t.id) ?? 0,
+      bestQuizScore: raw.bestQuizScoreByTopic.get(t.id) ?? null,
+    })),
+    quizScores: raw.quizScores,
+  });
+
+  const progressByTopic = new Map(unitProgress.topics.map((tp) => [tp.topicId, tp]));
+
+  // 3. Fetch student's notes for topics in this unit (for content summaries and depth check)
+  const topicIds = raw.topics.map((t) => t.id);
   const studentNotes = await db
     .select({
       id: notes.id,
@@ -76,9 +74,8 @@ export async function getGapReportService(
     notesByTopic.set(n.topicId, list);
   }
 
-  // 4. Topic coverage calculation
-  // TODO(BE-6): Replace simple "topic has >=1 note" check with the real progress coverage engine from lib/progress once BE-6 is implemented.
-  const summaries: TopicNoteSummary[] = unitTopics.map((t) => {
+  // 4. Build summaries for AI prompt
+  const summaries: TopicNoteSummary[] = raw.topics.map((t) => {
     const tNotes = notesByTopic.get(t.id) ?? [];
     return {
       topicId: t.id,
@@ -89,22 +86,35 @@ export async function getGapReportService(
     };
   });
 
-  const missingTopics = summaries.filter((t) => t.notesCount === 0);
-  // Shallow notes (< 150 chars total) are marked weak
+  // Decide covered/missing per topic from calculateUnitProgress(...).topics[].covered
+  const missingTopics = summaries.filter((t) => {
+    const tp = progressByTopic.get(t.topicId);
+    return !tp?.covered;
+  });
+
+  // Weak topics: covered topics whose notes are shallow (< 150 chars total)
   const weakTopics = summaries.filter((t) => {
-    if (t.notesCount === 0) return false;
+    const tp = progressByTopic.get(t.topicId);
+    if (!tp?.covered) return false;
     const totalChars = t.noteExcerpts.reduce((acc, text) => acc + text.length, 0);
     return totalChars < 150;
   });
 
-  const coveredCount = unitTopics.length - missingTopics.length;
+  const coveredCount = unitProgress.coveredTopics;
 
   // 5. Generate AI explanations for missing/weak topics if needed
-  let missingItems: GapItem[] = missingTopics.map((t) => ({
-    topicId: t.topicId,
-    title: t.topicTitle,
-    reason: "No notes written yet. Study this topic and write a summary to mark it covered.",
-  }));
+  let missingItems: GapItem[] = missingTopics.map((t) => {
+    const tp = progressByTopic.get(t.topicId);
+    let reason = "No notes written yet. Study this topic and write a summary to mark it covered.";
+    if (tp && tp.noteCount > 0 && tp.bestQuizScore !== null && tp.bestQuizScore < 50) {
+      reason = `Quiz score is ${tp.bestQuizScore}%. Retake the practice quiz with at least 50% to mark this topic covered.`;
+    }
+    return {
+      topicId: t.topicId,
+      title: t.topicTitle,
+      reason,
+    };
+  });
 
   let weakItems: GapItem[] = weakTopics.map((t) => ({
     topicId: t.topicId,
@@ -121,7 +131,7 @@ export async function getGapReportService(
         schema: GapReportGeneratedSchema,
         system: buildGapSystemPrompt(),
         prompt: buildGapUserPrompt({
-          unitTitle: unitRow.unitTitle,
+          unitTitle: raw.unit.title,
           topics: summaries,
         }),
       });
@@ -131,7 +141,10 @@ export async function getGapReportService(
         missingItems = missingTopics.map((t) => ({
           topicId: t.topicId,
           title: t.topicTitle,
-          reason: aiMap.get(t.topicId) ?? "No notes written yet for this syllabus topic.",
+          reason:
+            aiMap.get(t.topicId) ??
+            missingItems.find((m) => m.topicId === t.topicId)?.reason ??
+            "Not yet covered in your studies.",
         }));
       }
 
@@ -153,7 +166,7 @@ export async function getGapReportService(
     missing: missingItems,
     weak: weakItems,
     coveredCount,
-    totalTopics: unitTopics.length,
+    totalTopics: unitProgress.totalTopics,
     generatedAt: new Date().toISOString(),
   };
 }

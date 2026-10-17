@@ -24,6 +24,8 @@ import {
   insertQuizAttemptRecord,
   insertQuizRecord,
 } from "@/lib/db/queries/ai";
+import { getStudentUnitProgressRawData } from "@/lib/db/queries/progress";
+import { calculateUnitProgress } from "@/lib/progress";
 import {
   resourceChunks,
   resources,
@@ -214,32 +216,23 @@ export async function submitQuizAttemptService(
     refId: attempt.id,
   });
 
-  // Fetch unit topics to construct unit progress shape
-  const db = getDb();
-  const unitTopics = await db
-    .select({ id: topics.id, title: topics.title, order: topics.order })
-    .from(topics)
-    .where(eq(topics.unitId, quiz.unitId))
-    .orderBy(topics.order);
+  // Recalculate unit progress using the progress engine
+  const raw = await getStudentUnitProgressRawData(student.user.id, quiz.unitId);
+  if (!raw) {
+    throw new GatewayError("NOT_FOUND", "Unit not found.");
+  }
 
-  // TODO(BE-6): Replace with real unit progress recalculation via lib/progress once BE-6 is implemented.
-  const status = score >= 75 ? "mastered" : score >= 40 ? "in_progress" : score > 0 ? "low" : "not_started";
-  const unitProgress: UnitProgress = {
-    unitId: quiz.unitId,
-    percent: Math.round(score * 0.3),
-    status,
-    coveredTopics: quiz.topicId ? (score >= 50 ? 1 : 0) : Math.min(unitTopics.length, 1),
-    totalTopics: unitTopics.length,
-    quizAverage: score,
-    topics: unitTopics.map((t) => ({
+  const unitProgress: UnitProgress = calculateUnitProgress({
+    unitId: raw.unit.id,
+    topics: raw.topics.map((t) => ({
       topicId: t.id,
       title: t.title,
       order: t.order,
-      covered: quiz.topicId === t.id ? score >= 50 : false,
-      noteCount: 0,
-      bestQuizScore: quiz.topicId === t.id ? score : null,
+      noteCount: raw.noteCountsByTopic.get(t.id) ?? 0,
+      bestQuizScore: raw.bestQuizScoreByTopic.get(t.id) ?? null,
     })),
-  };
+    quizScores: raw.quizScores,
+  });
 
   return {
     attemptId: attempt.id,
