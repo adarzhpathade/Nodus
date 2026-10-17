@@ -152,11 +152,11 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-6.1 | `lib/progress/`: topic, unit, subject, semester % | P0 | BE-5.1 | Matches worked examples in `progress_logic.md` | ⬜ |
-| BE-6.2 | Class-average progress per section + weakest topic + students needing help | P0 | BE-6.1 | Correct for seeded data | ⬜ |
-| BE-6.3 | Student graph data (nodes, edges, prerequisites, %) | P0 | BE-6.1 | Matches C-06 | ⬜ |
-| BE-6.4 | Hover card + side panel data (topics ✅/⬜, notes, quiz, resources, assignment) | P0 | BE-6.3 | Matches C-06 | ⬜ |
-| BE-6.5 | Faculty graph data (class-level) | P0 | BE-6.2 | Matches C-06 | ⬜ |
+| BE-6.1 | `lib/progress/`: topic, unit, subject, semester % | P0 | BE-5.1 | Matches worked examples in `progress_logic.md` | ✅ |
+| BE-6.2 | Class-average progress per section + weakest topic + students needing help | P0 | BE-6.1 | Correct for seeded data | ✅ |
+| BE-6.3 | Student graph data (nodes, edges, prerequisites, %) | P0 | BE-6.1 | Matches C-06 | ✅ |
+| BE-6.4 | Hover card + side panel data (topics ✅/⬜, notes, quiz, resources, assignment) | P0 | BE-6.3 | Matches C-06 | ✅ |
+| BE-6.5 | Faculty graph data (class-level) | P0 | BE-6.2 | Matches C-06 | ✅ |
 | BE-6.6 | Unit tests for progress functions | P1 | BE-6.1 | Tests cover edge cases (no quiz, no topics) | ⬜ |
 | BE-6.7 | **INT-4** support | P0 | FE-6.x | Graph runs with real data | ⬜ |
 

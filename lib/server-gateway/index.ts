@@ -5,6 +5,7 @@ import { unimplementedApi } from "@/contracts/common";
 import type { NodusGateway } from "@/contracts/gateway";
 import { authApi } from "./auth";
 import { curriculumApi } from "./curriculum";
+import { graphApi } from "./graph";
 import { notesApi } from "./notes";
 import { resourcesApi } from "./resources";
 
@@ -13,7 +14,7 @@ export const serverGateway: NodusGateway = {
   curriculum: curriculumApi, // reads BE-3.6 · faculty edits BE-4.1/4.2
   resources: resourcesApi, // BE-4.3 … 4.8
   notes: notesApi, // BE-5.1 … 5.5, BE-5.7
-  graph: unimplementedApi("graph", "real"),
+  graph: graphApi, // BE-6.1 … 6.5, BE-6.7
   ai: unimplementedApi("ai", "real"),
   assignments: unimplementedApi("assignments", "real"),
   dashboard: unimplementedApi("dashboard", "real"),
