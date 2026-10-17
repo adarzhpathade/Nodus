@@ -1,6 +1,6 @@
 // Resource queries (faculty uploads, chunks, ingestion, section visibility). Owner: BE.
 import "server-only";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import {
   resourceChunks,

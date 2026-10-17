@@ -1,5 +1,6 @@
 "use server";
 // AI actions (non-streaming). The tutor chat streams via POST /api/ai/tutor instead. Owner: BE.
+import { z } from "zod";
 import {
   AnalyzeNoteInput,
   ConversationIdInput,
@@ -25,6 +26,12 @@ export async function deleteConversation(input: ConversationIdInput) {
 
 export async function generateQuiz(input: GenerateQuizInput) {
   return runAction(GenerateQuizInput, input, (data) => getGateway().ai.generateQuiz(data));
+}
+
+export async function getQuiz(input: { quizId: string }) {
+  return runAction(z.object({ quizId: z.string().uuid() }), input, (data) =>
+    getGateway().ai.getQuiz(data.quizId),
+  );
 }
 
 export async function submitQuizAttempt(input: SubmitQuizInput) {

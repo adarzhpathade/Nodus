@@ -25,6 +25,10 @@ function splitParagraphIntoSentences(paragraph: string): string[] {
     .filter(Boolean);
 }
 
+export function chunkText(text: string): string[] {
+  return chunkPageText(text);
+}
+
 function chunkPageText(text: string): string[] {
   const trimmed = text.trim();
   if (!trimmed) return [];
