@@ -11,6 +11,7 @@ import type {
   StudentGraph,
   StudentHoverCard,
   StudentSidePanel,
+  UpcomingDeadline,
 } from "@/contracts/graph";
 import type { Resource, ResourceType } from "@/contracts/resources";
 import type { UnitProgress } from "@/contracts/progress";
@@ -40,6 +41,11 @@ import {
   listResourcesForUnit,
   type ResourceRecord,
 } from "@/lib/db/queries/resources";
+import {
+  findNextUpcomingAssignmentForStudent,
+  findUnitAssignmentWithPendingForFaculty,
+  listStudentAssignments,
+} from "@/lib/db/queries/assignments";
 
 function hierarchyEdge(source: string, target: string): GraphEdge {
   return {
@@ -176,6 +182,14 @@ export const graphApi: GraphApi = {
     const edges: GraphEdge[] = [];
     const hoverCards: Record<string, StudentHoverCard> = {};
 
+    const studentAssignments = await listStudentAssignments({
+      studentId: student.user.id,
+      studentSection: student.profile.section,
+      branchId: student.profile.branch.id,
+      semesterNumber,
+    });
+    const now = new Date();
+
     for (let sIdx = 0; sIdx < raw.subjects.length; sIdx++) {
       const subject = raw.subjects[sIdx];
       const sProg = subjectProgressList[sIdx];
@@ -192,6 +206,25 @@ export const graphApi: GraphApi = {
 
       edges.push(hierarchyEdge(raw.semesterId, subject.id));
 
+      const nextSubject = studentAssignments
+        .filter(
+          (a) =>
+            a.assignment.subjectId === subject.id &&
+            a.assignment.dueAt >= now,
+        )
+        .sort((a, b) => a.assignment.dueAt.getTime() - b.assignment.dueAt.getTime())[0];
+
+      const nextSubjectDeadline: UpcomingDeadline | null = nextSubject
+        ? {
+            id: nextSubject.assignment.id,
+            title: nextSubject.assignment.title,
+            subjectName: nextSubject.subjectName,
+            unitId: nextSubject.assignment.unitId,
+            dueAt: nextSubject.assignment.dueAt.toISOString(),
+            status: nextSubject.status,
+          }
+        : null;
+
       hoverCards[subject.id] = {
         kind: "subject",
         id: subject.id,
@@ -200,7 +233,7 @@ export const graphApi: GraphApi = {
         status: sProg.status,
         unitCount: sProg.unitProgresses.length,
         completedUnits: sProg.unitProgresses.filter((u) => u.status === "mastered").length,
-        nextDeadline: null, // BE-8 assignments not built yet
+        nextDeadline: nextSubjectDeadline,
       };
 
       for (let uIdx = 0; uIdx < subject.units.length; uIdx++) {
@@ -219,6 +252,25 @@ export const graphApi: GraphApi = {
 
         edges.push(hierarchyEdge(subject.id, unit.id));
 
+        const nextUnit = studentAssignments
+          .filter(
+            (a) =>
+              a.assignment.unitId === unit.id &&
+              a.assignment.dueAt >= now,
+          )
+          .sort((a, b) => a.assignment.dueAt.getTime() - b.assignment.dueAt.getTime())[0];
+
+        const nextUnitDeadline: UpcomingDeadline | null = nextUnit
+          ? {
+              id: nextUnit.assignment.id,
+              title: nextUnit.assignment.title,
+              subjectName: nextUnit.subjectName,
+              unitId: nextUnit.assignment.unitId,
+              dueAt: nextUnit.assignment.dueAt.toISOString(),
+              status: nextUnit.status,
+            }
+          : null;
+
         hoverCards[unit.id] = {
           kind: "unit",
           id: unit.id,
@@ -232,7 +284,7 @@ export const graphApi: GraphApi = {
           })),
           noteCount: uProg.topics.reduce((sum, t) => sum + t.noteCount, 0),
           quizAverage: uProg.quizAverage,
-          nextDeadline: null, // BE-8 assignments not built yet
+          nextDeadline: nextUnitDeadline,
         };
       }
     }
@@ -279,6 +331,13 @@ export const graphApi: GraphApi = {
     const resourceRows = await listResourcesForUnit(unitId, student.profile.section);
     const resources = resourceRows.map((r) => toResource(r.resource, r.uploader));
 
+    const assignment = await findNextUpcomingAssignmentForStudent({
+      studentId: student.user.id,
+      studentSection: student.profile.section,
+      unitId,
+      fallbackToRecent: true,
+    });
+
     return {
       unit: {
         id: raw.unit.id,
@@ -288,7 +347,7 @@ export const graphApi: GraphApi = {
       },
       progress,
       resources,
-      assignment: null, // BE-8 assignments not built yet
+      assignment,
     };
   },
 
@@ -479,6 +538,11 @@ export const graphApi: GraphApi = {
     const resourceRows = await listResourcesForUnit(input.unitId);
     const resources = resourceRows.map((r) => toResource(r.resource, r.uploader));
 
+    const assignment = await findUnitAssignmentWithPendingForFaculty({
+      unitId: input.unitId,
+      section: input.section,
+    });
+
     return {
       unit: {
         id: unitInfo.unit.id,
@@ -492,7 +556,7 @@ export const graphApi: GraphApi = {
       topics: cls.topics,
       studentsNeedingHelp,
       resources,
-      assignment: null, // BE-8 assignments not built yet
+      assignment,
     };
   },
 };

@@ -1,6 +1,6 @@
 // Assignment database queries (OFFLINE submission). Owner: BE.
 import "server-only";
-import { and, asc, count, desc, eq, inArray, isNull, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNull, or } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import {
   assignmentSections,
@@ -724,5 +724,226 @@ export async function bulkUpsertMarkingStatusRecord(params: {
 
     return results;
   });
+}
+
+export interface UpcomingAssignmentSummary {
+  id: string;
+  title: string;
+  subjectName: string;
+  unitId: string | null;
+  dueAt: string;
+  status: ContractAssignmentStatus;
+}
+
+/**
+ * Finds the nearest upcoming assignment for a student by unit or subject,
+ * with optional fallback to the most recent past assignment.
+ */
+export async function findNextUpcomingAssignmentForStudent(params: {
+  studentId: string;
+  studentSection: string;
+  unitId?: string;
+  subjectId?: string;
+  fallbackToRecent?: boolean;
+}): Promise<UpcomingAssignmentSummary | null> {
+  const db = getDb();
+  const now = new Date();
+
+  const conditions = [
+    eq(assignmentSections.section, params.studentSection),
+  ];
+  if (params.unitId) {
+    conditions.push(eq(assignments.unitId, params.unitId));
+  } else if (params.subjectId) {
+    conditions.push(eq(assignments.subjectId, params.subjectId));
+  }
+
+  // Nearest upcoming assignment (dueAt >= now, soonest first)
+  const [upcomingRow] = await db
+    .select({
+      id: assignments.id,
+      title: assignments.title,
+      subjectName: subjects.name,
+      unitId: assignments.unitId,
+      dueAt: assignments.dueAt,
+      status: assignmentStatus.status,
+    })
+    .from(assignments)
+    .innerJoin(assignmentSections, eq(assignmentSections.assignmentId, assignments.id))
+    .innerJoin(subjects, eq(subjects.id, assignments.subjectId))
+    .leftJoin(
+      assignmentStatus,
+      and(
+        eq(assignmentStatus.assignmentId, assignments.id),
+        eq(assignmentStatus.studentId, params.studentId),
+      ),
+    )
+    .where(and(...conditions, gte(assignments.dueAt, now)))
+    .orderBy(asc(assignments.dueAt))
+    .limit(1);
+
+  if (upcomingRow) {
+    return {
+      id: upcomingRow.id,
+      title: upcomingRow.title,
+      subjectName: upcomingRow.subjectName,
+      unitId: upcomingRow.unitId,
+      dueAt: upcomingRow.dueAt.toISOString(),
+      status: (upcomingRow.status ?? "pending") as ContractAssignmentStatus,
+    };
+  }
+
+  if (!params.fallbackToRecent) {
+    return null;
+  }
+
+  // Fallback to most recent past assignment (dueAt < now, most recent first)
+  const [pastRow] = await db
+    .select({
+      id: assignments.id,
+      title: assignments.title,
+      subjectName: subjects.name,
+      unitId: assignments.unitId,
+      dueAt: assignments.dueAt,
+      status: assignmentStatus.status,
+    })
+    .from(assignments)
+    .innerJoin(assignmentSections, eq(assignmentSections.assignmentId, assignments.id))
+    .innerJoin(subjects, eq(subjects.id, assignments.subjectId))
+    .leftJoin(
+      assignmentStatus,
+      and(
+        eq(assignmentStatus.assignmentId, assignments.id),
+        eq(assignmentStatus.studentId, params.studentId),
+      ),
+    )
+    .where(and(...conditions))
+    .orderBy(desc(assignments.dueAt))
+    .limit(1);
+
+  if (pastRow) {
+    return {
+      id: pastRow.id,
+      title: pastRow.title,
+      subjectName: pastRow.subjectName,
+      unitId: pastRow.unitId,
+      dueAt: pastRow.dueAt.toISOString(),
+      status: (pastRow.status ?? "pending") as ContractAssignmentStatus,
+    };
+  }
+
+  return null;
+}
+
+export interface FacultyUnitAssignmentWithPending {
+  id: string;
+  title: string;
+  subjectName: string;
+  unitId: string | null;
+  dueAt: string;
+  pendingCount: number;
+}
+
+/**
+ * Finds the unit assignment for faculty side panel targeting a specific section,
+ * returning assignment summary along with the pending marking count.
+ */
+export async function findUnitAssignmentWithPendingForFaculty(params: {
+  unitId: string;
+  section: string;
+}): Promise<FacultyUnitAssignmentWithPending | null> {
+  const db = getDb();
+  const now = new Date();
+
+  // Try upcoming first
+  const [upcomingRow] = await db
+    .select({
+      id: assignments.id,
+      title: assignments.title,
+      subjectName: subjects.name,
+      unitId: assignments.unitId,
+      dueAt: assignments.dueAt,
+      semesterNumber: semesters.number,
+      branchId: semesters.branchId,
+    })
+    .from(assignments)
+    .innerJoin(assignmentSections, eq(assignmentSections.assignmentId, assignments.id))
+    .innerJoin(subjects, eq(subjects.id, assignments.subjectId))
+    .innerJoin(semesters, eq(semesters.id, subjects.semesterId))
+    .where(
+      and(
+        eq(assignments.unitId, params.unitId),
+        eq(assignmentSections.section, params.section),
+        gte(assignments.dueAt, now),
+      ),
+    )
+    .orderBy(asc(assignments.dueAt))
+    .limit(1);
+
+  let targetRow = upcomingRow;
+  if (!targetRow) {
+    const [pastRow] = await db
+      .select({
+        id: assignments.id,
+        title: assignments.title,
+        subjectName: subjects.name,
+        unitId: assignments.unitId,
+        dueAt: assignments.dueAt,
+        semesterNumber: semesters.number,
+        branchId: semesters.branchId,
+      })
+      .from(assignments)
+      .innerJoin(assignmentSections, eq(assignmentSections.assignmentId, assignments.id))
+      .innerJoin(subjects, eq(subjects.id, assignments.subjectId))
+      .innerJoin(semesters, eq(semesters.id, subjects.semesterId))
+      .where(
+        and(
+          eq(assignments.unitId, params.unitId),
+          eq(assignmentSections.section, params.section),
+        ),
+      )
+      .orderBy(desc(assignments.dueAt))
+      .limit(1);
+
+    targetRow = pastRow;
+  }
+
+  if (!targetRow) return null;
+
+  // Calculate pending count for this section
+  const [studentTotalRow] = await db
+    .select({ total: count() })
+    .from(studentProfiles)
+    .where(
+      and(
+        eq(studentProfiles.branchId, targetRow.branchId),
+        eq(studentProfiles.currentSemester, targetRow.semesterNumber),
+        eq(studentProfiles.section, params.section),
+      ),
+    );
+  const totalStudents = Number(studentTotalRow?.total ?? 0);
+
+  const [markedCountRow] = await db
+    .select({ total: count() })
+    .from(assignmentStatus)
+    .innerJoin(studentProfiles, eq(studentProfiles.userId, assignmentStatus.studentId))
+    .where(
+      and(
+        eq(assignmentStatus.assignmentId, targetRow.id),
+        eq(studentProfiles.section, params.section),
+        inArray(assignmentStatus.status, ["submitted", "late", "not_submitted"]),
+      ),
+    );
+  const markedStudents = Number(markedCountRow?.total ?? 0);
+  const pendingCount = Math.max(0, totalStudents - markedStudents);
+
+  return {
+    id: targetRow.id,
+    title: targetRow.title,
+    subjectName: targetRow.subjectName,
+    unitId: targetRow.unitId,
+    dueAt: targetRow.dueAt.toISOString(),
+    pendingCount,
+  };
 }
 
