@@ -19,15 +19,15 @@
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 6 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 8 |
-| BE-5 | Notes | 5 | 8 | 6 |
-| BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
-| BE-7 | AI | 7–8 | 11 | 0 |
-| BE-8 | Assignments & notifications | 9 | 8 | 0 |
+| BE-5 | Notes | 5 | 8 | 7 |
+| BE-6 | Progress engine & graph data | 6–7 | 7 | 5 |
+| BE-7 | AI | 7–8 | 11 | 10 |
+| BE-8 | Assignments & notifications | 9 | 8 | 7 |
 | BE-9 | Dashboard data | 9–10 | 4 | 0 |
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
 | BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **55** |
+| | **Total** | | **109** | **78** |
 
 ---
 

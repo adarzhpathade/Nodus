@@ -1,0 +1,7 @@
+# Task: be-7-fixes2 (Gemini, BACKEND) - round 2
+Work ONLY in E:\Projects\College Projects\nodus-be7. No shell or git; file tools only. This branch now contains lib/progress/index.ts and lib/db/queries/progress.ts (from BE-6). Read both first.
+1. lib/ai/quiz.ts `submitQuizAttemptService` (the TODO(BE-6) block): after the attempt is stored, build the returned `unitProgress` with the real engine: `getStudentUnitProgressRawData(student.user.id, quiz.unitId)` from "@/lib/db/queries/progress" then `calculateUnitProgress` from "@/lib/progress" (see getUnitProgress in lib/server-gateway/graph.ts). Delete the estimated status/percent code and any imports it made unused. Also return the pre-attempt percent if the contract (QuizAttemptResult in contracts/ai.ts) asks for it; read the contract and match it exactly.
+2. lib/ai/gap.ts `getGapReportService` (the TODO(BE-6) block): decide covered/missing per topic from `calculateUnitProgress(...).topics[].covered` (real rule incl. quiz) using the same raw-data query; the AI only adds the explanation text. Remove the "has >= 1 note" shortcut and the TODO.
+3. Remove unused imports/vars flagged by lint: `mapAiError` in lib/ai/gap.ts, `sql` in lib/db/queries/ai.ts, `asc` in lib/db/queries/resources.ts, and any others in files you touch.
+4. Grep lib/ai and lib/server-gateway/ai.ts for any remaining `TODO(BE-6)` and resolve them.
+Change nothing else. End with a Report listing each edit.
