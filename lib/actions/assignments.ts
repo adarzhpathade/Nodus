@@ -38,3 +38,11 @@ export async function getMarkingSheet(input: { assignmentId: string; section: st
     getGateway().assignments.getMarkingSheet(data),
   );
 }
+
+/** Switch section inside the tracker page without a full reload. */
+export async function getSectionTracker(input: { subjectId: string; section: string }) {
+  return runAction(z.object({ subjectId: Id, section: Section }), input, (data) =>
+    getGateway().assignments.getSectionTracker(data),
+  );
+}
+

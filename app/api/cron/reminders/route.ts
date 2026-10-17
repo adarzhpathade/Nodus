@@ -3,6 +3,7 @@
 import { connection } from "next/server";
 import { isMocked } from "@/lib/gateway";
 import { errorResponse } from "@/lib/actions/result";
+import { createDeadlineReminders } from "@/lib/db/queries/notifications";
 
 export async function GET(request: Request) {
   await connection();
@@ -13,5 +14,6 @@ export async function GET(request: Request) {
 
   if (isMocked("notifications")) return Response.json({ ok: true, mocked: true, created: 0 });
 
-  return errorResponse({ code: "NOT_IMPLEMENTED", message: "Deadline reminders are not built yet (BE-8.7)." });
+  const result = await createDeadlineReminders();
+  return Response.json({ ok: true, created: result.created });
 }
