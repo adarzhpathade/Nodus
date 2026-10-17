@@ -9,6 +9,8 @@ import { graphApi } from "./graph";
 import { notesApi } from "./notes";
 import { resourcesApi } from "./resources";
 import { aiApi } from "./ai";
+import { assignmentsApi } from "./assignments";
+import { notificationsApi } from "./notifications";
 
 export const serverGateway: NodusGateway = {
   auth: authApi, // BE-3.4 / 3.5
@@ -17,7 +19,7 @@ export const serverGateway: NodusGateway = {
   notes: notesApi, // BE-5.1 … 5.5, BE-5.7
   graph: graphApi, // BE-6.1 … 6.5, BE-6.7
   ai: aiApi, // BE-7.1 … BE-7.10
-  assignments: unimplementedApi("assignments", "real"),
+  assignments: assignmentsApi, // BE-8.1 … 8.5
   dashboard: unimplementedApi("dashboard", "real"),
-  notifications: unimplementedApi("notifications", "real"),
+  notifications: notificationsApi, // BE-8.6 / 8.7
 };

@@ -184,13 +184,13 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-8.1 | Create/list assignments for own subjects + sections | P0 | BE-3.2 | Matches C-08 | ⬜ |
-| BE-8.2 | Marking: Submitted / Late / Not submitted + marks + remark | P0 | BE-8.1 | Saved per student | ⬜ |
-| BE-8.3 | Bulk marking | P1 | BE-8.2 | One call marks many | ⬜ |
-| BE-8.4 | Student assignment view (status, due date) | P0 | BE-8.1 | Only own sections | ⬜ |
-| BE-8.5 | Section tracker data | P0 | BE-8.2 | Counts correct | ⬜ |
-| BE-8.6 | Notifications CRUD + unread count | P1 | BE-2.7 | Matches C-10 | ⬜ |
-| BE-8.7 | Triggers (new resource, new assignment, status marked) + reminders via `app/api/cron/reminders` (Vercel Cron) | P1 | BE-8.6 | Notifications created | ⬜ |
+| BE-8.1 | Create/list assignments for own subjects + sections | P0 | BE-3.2 | Matches C-08 | ✅ |
+| BE-8.2 | Marking: Submitted / Late / Not submitted + marks + remark | P0 | BE-8.1 | Saved per student | ✅ |
+| BE-8.3 | Bulk marking | P1 | BE-8.2 | One call marks many | ✅ |
+| BE-8.4 | Student assignment view (status, due date) | P0 | BE-8.1 | Only own sections | ✅ |
+| BE-8.5 | Section tracker data | P0 | BE-8.2 | Counts correct | ✅ |
+| BE-8.6 | Notifications CRUD + unread count | P1 | BE-2.7 | Matches C-10 | ✅ |
+| BE-8.7 | Triggers (new resource, new assignment, status marked) + reminders via `app/api/cron/reminders` (Vercel Cron) | P1 | BE-8.6 | Notifications created | ✅ |
 | BE-8.8 | **INT-6** support | P0 | FE-8.x | Runs with real data | ⬜ |
 
 ---
@@ -254,3 +254,4 @@
 | 2026-10-15 | FE: update mocks/gateway.ts curriculum faculty methods to mirror NOT_FOUND / FORBIDDEN / VALIDATION / CONFLICT behaviour; noteLinkHref/parseNoteLinkHref now exported from contracts/notes.ts | Open |
 | 2026-10-15 | Real resources API, storage upload (`POST /api/upload`), and ingestion pipeline implemented (BE-4.3 to BE-4.8). FE can test against real resources by removing `resources` from `MOCK_FEATURES` | Info |
 | 2026-10-15 | Real notes API implemented (BE-5.1 to 5.5, 5.7). FE can test against real notes by removing `notes` from `MOCK_FEATURES`. Server actions in `lib/actions/notes.ts` cover all NotesApi methods. Note embeddings (BE-5.6) deferred until Gemini API key is configured. | Info |
+| 2026-10-17 | Real assignments API (BE-8.1 to 8.5) and notifications API (BE-8.6 to 8.7) implemented. FE can test by removing `assignments` and `notifications` from `MOCK_FEATURES`. Server action `getSectionTracker` added to `lib/actions/assignments.ts`. Exported `notifyNewResource` helper in `lib/db/queries/notifications.ts` for reviewer/FE. | Info |
