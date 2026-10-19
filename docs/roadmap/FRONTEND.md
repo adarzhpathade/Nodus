@@ -20,14 +20,14 @@
 | FE-3 | Auth & app shell | 3 | 9 | 8 |
 | FE-4 | Faculty content & unit page | 4 | 6 | 5 |
 | FE-5 | Notes | 5 | 10 | 9 |
-| FE-6 | Graph View | 6–7 | 12 | 0 |
+| FE-6 | Graph View | 6–7 | 12 | 11 |
 | FE-7 | AI UI | 7–8 | 9 | 0 |
 | FE-8 | Assignments & notifications | 9 | 8 | 0 |
 | FE-9 | Dashboards | 9–10 | 8 | 0 |
 | FE-10 | Design replication & motion polish | 10–11 | 12 | 0 |
 | FE-11 | Testing & demo | 11–12 | 7 | 0 |
 | FE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **101** | **34** |
+| | **Total** | | **101** | **45** |
 
 > FE starts after **BOOT** is merged to `main` (BE task BOOT-12).
 
@@ -124,17 +124,17 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| FE-6.1 | `TreeGraph` with React Flow + dagre (left → right) | P0 | FE-1.10 | Semester → subjects → units rendered | ⬜ |
-| FE-6.2 | Custom nodes: name, %, progress ring, status color | P0 | FE-6.1 | Status ranges correct | ⬜ |
-| FE-6.3 | Expand/collapse subjects with animated layout | P0 | FE-6.1 | Smooth | ⬜ |
-| FE-6.4 | Prerequisite dashed edges | P1 | FE-6.1 | Visible | ⬜ |
-| FE-6.5 | Hover card (subject + unit variants) | P0 | FE-6.2 | Shows %, topics ✅/⬜, notes, quiz, deadline | ⬜ |
-| FE-6.6 | Side panel (topics, + Add note, resources, assignment, Ask AI, Practice) | P0 | FE-6.2 | Opens/closes with animation; actions navigate | ⬜ |
-| FE-6.7 | Controls: zoom, pan, fit view, legend | P0 | FE-6.1 | Work | ⬜ |
-| FE-6.8 | Search fly-to node | P1 | FE-6.1 | Camera animates to node | ⬜ |
-| FE-6.9 | Keyboard navigation (Tab / Enter / Esc) | P1 | FE-6.6 | Accessible | ⬜ |
-| FE-6.10 | Faculty Graph View (class data, weak topics, students needing help, edit topics) | P0 | FE-6.6 | Same component, faculty data | ⬜ |
-| FE-6.11 | "Topic covered" micro-animation | P1 | FE-6.2 | Node animates on change | ⬜ |
+| FE-6.1 | `TreeGraph` with React Flow + dagre (left → right) | P0 | FE-1.10 | Semester → subjects → units rendered | ✅ |
+| FE-6.2 | Custom nodes: name, %, progress ring, status color | P0 | FE-6.1 | Status ranges correct | ✅ |
+| FE-6.3 | Expand/collapse subjects with animated layout | P0 | FE-6.1 | Smooth | ✅ |
+| FE-6.4 | Prerequisite dashed edges | P1 | FE-6.1 | Visible | ✅ |
+| FE-6.5 | Hover card (subject + unit variants) | P0 | FE-6.2 | Shows %, topics ✅/⬜, notes, quiz, deadline | ✅ |
+| FE-6.6 | Side panel (topics, + Add note, resources, assignment, Ask AI, Practice) | P0 | FE-6.2 | Opens/closes with animation; actions navigate | ✅ |
+| FE-6.7 | Controls: zoom, pan, fit view, legend | P0 | FE-6.1 | Work | ✅ |
+| FE-6.8 | Search fly-to node | P1 | FE-6.1 | Camera animates to node | ✅ |
+| FE-6.9 | Keyboard navigation (Tab / Enter / Esc) | P1 | FE-6.6 | Accessible | ✅ |
+| FE-6.10 | Faculty Graph View (class data, weak topics, students needing help, edit topics) | P0 | FE-6.6 | Same component, faculty data | ✅ |
+| FE-6.11 | "Topic covered" micro-animation | P1 | FE-6.2 | Node animates on change | ✅ |
 | FE-6.12 | **INT-4**: switch `graph` to real | P0 | BE-6.7 | Works with real data | ⬜ |
 
 ---
@@ -245,3 +245,4 @@
 | 2026-10-15 | FYI: `mocks/gateway.ts` + `mocks/ai-tutor.ts` are now real mocks (FE-1.10/1.11). `mockTutorReply(question, scope)` keeps the same signature the tutor route calls; it answers as the mock demo student. | Info |
 | 2026-10-15 | **FE-3 Shells & Auth completed.** Created shells (student & faculty), route guards, top navigation without sidebars, onboarding, semester & subject/section switchers, ProfileCard, and route transitions. Please ensure Neon Auth session cookie and auth provider proxy are synced for SSR viewer resolution when switching from mocks to real in INT-1. | Info |
 | 2026-10-15 | **FE-5 Notes completed.** Implemented Notes list with debounced search, subject/unit/topic filters, tags, and pagination; Tiptap markdown editor with debounced auto-save (~1s, dirty-fields only), slash menu, link picker (`nodus://` URI scheme), backlinks panel, link hover preview, Ctrl+K quick switcher, and Markdown export. Ready for INT-3 (BE-5 real notes). | Info |
+| 2026-10-19 | **FE-6 Graph View completed.** Built tree layout using React Flow + Dagre (left to right), custom semester/subject/unit/topic nodes with progress rings and 4-band status colors, expandable/collapsible subjects with animated re-layout, dashed prerequisite edges, spring hover cards (subject, unit, faculty variants), slide-in side panels (student & faculty), in-graph search with camera fly-to, keyboard navigation (Tab/Enter/Esc), and topic covered micro-animation. Ready for INT-4 (BE-6 real graph). | Info |
