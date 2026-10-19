@@ -313,7 +313,10 @@ export async function getTopAiTopicsForSubject(
     })
     .from(topics)
     .innerJoin(units, eq(units.id, topics.unitId))
-    .leftJoin(aiMessages, eq(aiMessages.topicId, topics.id))
+    .leftJoin(
+      aiMessages,
+      and(eq(aiMessages.topicId, topics.id), eq(aiMessages.role, "user")),
+    )
     .where(eq(units.subjectId, subjectId))
     .groupBy(topics.id, topics.title)
     .orderBy(desc(count(aiMessages.id)), asc(topics.title))
