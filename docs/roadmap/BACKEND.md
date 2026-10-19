@@ -199,9 +199,9 @@
 
 | ID | Task | Pri | Needs | Done when | Status |
 |---|---|---|---|---|---|
-| BE-9.1 | Student dashboard loader (stats, rings, heatmap, deadlines, streak; radar + trend optional) | P0 | BE-6.1, BE-8.4 | Matches C-09 | ⬜ |
-| BE-9.2 | Faculty dashboard loader (section comparison, weak units heatmap, submission donuts) | P0 | BE-6.2, BE-8.5 | Matches C-09 | ⬜ |
-| BE-9.3 | Most-asked AI topics (aggregated, no content leak) | P1 | BE-7.5 | Topic counts only | ⬜ |
+| BE-9.1 | Student dashboard loader (stats, rings, heatmap, deadlines, streak; radar + trend optional) | P0 | BE-6.1, BE-8.4 | Matches C-09 | ✅ |
+| BE-9.2 | Faculty dashboard loader (section comparison, weak units heatmap, submission donuts) | P0 | BE-6.2, BE-8.5 | Matches C-09 | ✅ |
+| BE-9.3 | Most-asked AI topics (aggregated, no content leak) | P1 | BE-7.5 | Topic counts only | ✅ |
 | BE-9.4 | **INT-7** support | P0 | FE-9.x | Dashboards real | ⬜ |
 
 ---
