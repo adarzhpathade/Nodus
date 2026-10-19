@@ -26,7 +26,10 @@ export const resources = pgTable(
     ingestionError: text("ingestion_error"),
     ...timestamps,
   },
-  (t) => [index("resources_unit_idx").on(t.unitId)],
+  (t) => [
+    index("resources_unit_idx").on(t.unitId),
+    index("resources_unit_status_idx").on(t.unitId, t.ingestionStatus),
+  ],
 );
 
 export const resourceChunks = pgTable(

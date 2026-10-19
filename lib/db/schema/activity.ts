@@ -16,7 +16,10 @@ export const activityLog = pgTable(
     refId: uuid("ref_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("activity_log_student_time_idx").on(t.studentId, t.createdAt)],
+  (t) => [
+    index("activity_log_student_time_idx").on(t.studentId, t.createdAt),
+    index("activity_log_student_type_ref_idx").on(t.studentId, t.type, t.refId, t.createdAt),
+  ],
 );
 
 export const notifications = pgTable(
@@ -34,5 +37,8 @@ export const notifications = pgTable(
     readAt: timestamp("read_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("notifications_user_time_idx").on(t.userId, t.createdAt)],
+  (t) => [
+    index("notifications_user_time_idx").on(t.userId, t.createdAt),
+    index("notifications_user_read_time_idx").on(t.userId, t.readAt, t.createdAt),
+  ],
 );

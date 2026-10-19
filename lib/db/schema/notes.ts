@@ -30,6 +30,7 @@ export const notes = pgTable(
   (t) => [
     index("notes_owner_topic_idx").on(t.ownerId, t.topicId),
     index("notes_owner_updated_idx").on(t.ownerId, t.updatedAt),
+    index("notes_owner_topic_updated_idx").on(t.ownerId, t.topicId, t.updatedAt),
     index("notes_search_idx").using("gin", t.searchVector),
     index("notes_tags_idx").using("gin", t.tags),
   ],
@@ -50,6 +51,7 @@ export const noteLinks = pgTable(
   (t) => [
     unique("note_links_uq").on(t.fromNoteId, t.toType, t.toId),
     index("note_links_target_idx").on(t.toType, t.toId),
+    index("note_links_target_from_idx").on(t.toType, t.toId, t.fromNoteId),
   ],
 );
 

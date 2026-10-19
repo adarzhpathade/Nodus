@@ -6,6 +6,7 @@ import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { getAuth } from "@/lib/auth/server";
 import { getStorage } from "@/lib/storage";
+import { errorResponse } from "@/lib/actions/result";
 
 type Check = { ok: boolean; detail: string };
 
@@ -13,7 +14,14 @@ async function run(fn: () => Promise<string>): Promise<Check> {
   try {
     return { ok: true, detail: await fn() };
   } catch (error) {
-    return { ok: false, detail: error instanceof Error ? error.message : String(error) };
+    console.error("[nodus] healthcheck failure:", error);
+    const detail =
+      process.env.NODE_ENV === "production"
+        ? "Service check failed."
+        : error instanceof Error
+          ? error.message
+          : String(error);
+    return { ok: false, detail };
   }
 }
 
@@ -25,7 +33,7 @@ function allowed(request: Request): boolean {
 
 export async function GET(request: Request) {
   await connection(); // always run at request time, never prerender
-  if (!allowed(request)) return new Response("Not found", { status: 404 });
+  if (!allowed(request)) return errorResponse({ code: "NOT_FOUND", message: "Not found." });
 
   const postgres = await run(async () => {
     const db = getDb();

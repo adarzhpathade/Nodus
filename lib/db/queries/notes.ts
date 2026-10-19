@@ -14,7 +14,7 @@ import {
 import { waitUntil } from "@vercel/functions";
 import { chunkText } from "@/lib/ai/rag/chunk";
 import { generateEmbeddings } from "@/lib/ai/rag/embed";
-import type { SyllabusLocation } from "@/contracts/common";
+import { GatewayError, type SyllabusLocation } from "@/contracts/common";
 
 export type NoteRecord = typeof notes.$inferSelect;
 export type NoteLinkRecord = typeof noteLinks.$inferSelect;
@@ -479,7 +479,7 @@ export async function insertNoteLink(
   toId: string,
 ): Promise<NoteLinkRecord> {
   if (!UUID_RE.test(fromNoteId) || !UUID_RE.test(toId)) {
-    throw new Error("Invalid UUID for note link");
+    throw new GatewayError("VALIDATION", "Invalid target ID.");
   }
 
   const [created] = await getDb()

@@ -21,7 +21,10 @@ export const assignments = pgTable(
       .references(() => users.id),
     ...timestamps,
   },
-  (t) => [index("assignments_subject_due_idx").on(t.subjectId, t.dueAt)],
+  (t) => [
+    index("assignments_subject_due_idx").on(t.subjectId, t.dueAt),
+    index("assignments_unit_due_idx").on(t.unitId, t.dueAt),
+  ],
 );
 
 export const assignmentSections = pgTable(
@@ -32,7 +35,10 @@ export const assignmentSections = pgTable(
       .references(() => assignments.id, { onDelete: "cascade" }),
     section: char("section", { length: 1 }).notNull(),
   },
-  (t) => [primaryKey({ columns: [t.assignmentId, t.section] })],
+  (t) => [
+    primaryKey({ columns: [t.assignmentId, t.section] }),
+    index("assignment_sections_section_idx").on(t.section, t.assignmentId),
+  ],
 );
 
 /** One row per (assignment, student) once marked. No row = "pending". */
@@ -51,5 +57,9 @@ export const assignmentStatus = pgTable(
     markedBy: uuid("marked_by").references(() => users.id),
     markedAt: timestamp("marked_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.assignmentId, t.studentId] }), index("assignment_status_student_idx").on(t.studentId)],
+  (t) => [
+    primaryKey({ columns: [t.assignmentId, t.studentId] }),
+    index("assignment_status_student_idx").on(t.studentId),
+    index("assignment_status_student_status_idx").on(t.studentId, t.status),
+  ],
 );
