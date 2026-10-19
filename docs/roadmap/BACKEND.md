@@ -13,21 +13,21 @@
 
 | Phase | Name | Weeks | Tasks | Done |
 |---|---|---|---|---|
-| BE-0 | Backend docs | 1 | 5 | 2 |
+| BE-0 | Backend docs | 1 | 5 | 5 |
 | BOOT | Repo bootstrap (on `main`, before split) | 1 | 12 | 10 |
 | BE-1 | Contract sprint | 2 | 14 | 14 |
 | BE-2 | Database & seed | 2–3 | 9 | 9 |
 | BE-3 | Auth & roles | 3 | 7 | 6 |
 | BE-4 | Curriculum, resources & ingestion | 4 | 9 | 8 |
 | BE-5 | Notes | 5 | 8 | 6 |
-| BE-6 | Progress engine & graph data | 6–7 | 7 | 0 |
-| BE-7 | AI | 7–8 | 11 | 0 |
-| BE-8 | Assignments & notifications | 9 | 8 | 0 |
-| BE-9 | Dashboard data | 9–10 | 4 | 0 |
+| BE-6 | Progress engine & graph data | 6–7 | 7 | 5 |
+| BE-7 | AI | 7–8 | 11 | 10 |
+| BE-8 | Assignments & notifications | 9 | 8 | 7 |
+| BE-9 | Dashboard data | 9–10 | 4 | 3 |
 | BE-10 | Hardening & performance | 10–11 | 5 | 0 |
-| BE-11 | Testing, deployment & docs | 11–12 | 6 | 0 |
+| BE-11 | Testing, deployment & docs | 11–12 | 6 | 2 |
 | BE-B | Bonus | anytime | 4 | 0 |
-| | **Total** | | **109** | **55** |
+| | **Total** | | **109** | **85** |
 
 ---
 
@@ -36,9 +36,9 @@
 | ID | Task | Pri | Done when | Status |
 |---|---|---|---|---|
 | BE-0.1 | `docs/database_schema.md` + Mermaid ER diagram | P0 | All tables (AGENTS.md §7) with columns, keys, relations | ✅ |
-| BE-0.2 | `docs/architecture.md` (system + RAG pipeline diagrams) | P0 | Diagrams render; gateway/mock pattern explained | ⬜ |
-| BE-0.3 | `docs/progress_logic.md` with 3 worked examples | P0 | Matches AGENTS.md §6.6 | ⬜ |
-| BE-0.4 | DFD (L0–L2) + sequence diagrams (tutor question, faculty marking, upload ingestion) | P1 | In `docs/architecture.md` or `docs/diagrams.md` | ⬜ |
+| BE-0.2 | `docs/architecture.md` (system + RAG pipeline diagrams) | P0 | Diagrams render; gateway/mock pattern explained | ✅ |
+| BE-0.3 | `docs/progress_logic.md` with 3 worked examples | P0 | Matches AGENTS.md §6.6 | ✅ |
+| BE-0.4 | DFD (L0–L2) + sequence diagrams (tutor question, faculty marking, upload ingestion) | P1 | In `docs/architecture.md` or `docs/diagrams.md` | ✅ |
 | BE-0.5 | `docs/environment_setup.md` skeleton (accounts, env vars, commands) | P0 | Steps to run locally | ✅ |
 
 ---
@@ -223,10 +223,10 @@
 | ID | Task | Pri | Done when | Status |
 |---|---|---|---|---|
 | BE-11.1 | Permission tests (notes privacy, locked semesters, faculty scope) | P0 | All pass | ⬜ |
-| BE-11.2 | Backend test cases for `docs/test_cases.md` (send to FE, who owns the file) | P0 | Delivered in report | ⬜ |
+| BE-11.2 | Backend test cases for `docs/test_cases.md` (send to FE, who owns the file) | P0 | Delivered in report | ✅ Delivered in `docs/test_cases_backend.md` (50 test cases) |
 | BE-11.3 | Vercel deploy: env vars, Neon prod branch, cron | P0 | Production URL works | ⬜ |
 | BE-11.4 | `MOCK_FEATURES` empty in production; mocks excluded from prod path | P0 | No mock data in prod | ⬜ |
-| BE-11.5 | Final update: schema, architecture, api_contract, progress_logic, environment_setup | P0 | Docs match code | ⬜ |
+| BE-11.5 | Final update: schema, architecture, api_contract, progress_logic, environment_setup | P0 | Docs match code | ✅ Architecture, API contract, schema, progress, and env docs updated |
 | BE-11.6 | **INT-8** support | P0 | Full system live | ⬜ |
 
 ---
@@ -255,3 +255,4 @@
 | 2026-10-15 | Real resources API, storage upload (`POST /api/upload`), and ingestion pipeline implemented (BE-4.3 to BE-4.8). FE can test against real resources by removing `resources` from `MOCK_FEATURES` | Info |
 | 2026-10-15 | Real notes API implemented (BE-5.1 to 5.5, 5.7). FE can test against real notes by removing `notes` from `MOCK_FEATURES`. Server actions in `lib/actions/notes.ts` cover all NotesApi methods. Note embeddings (BE-5.6) deferred until Gemini API key is configured. | Info |
 | 2026-10-17 | Real assignments API (BE-8.1 to 8.5) and notifications API (BE-8.6 to 8.7) implemented. FE can test by removing `assignments` and `notifications` from `MOCK_FEATURES`. Server action `getSectionTracker` added to `lib/actions/assignments.ts`. Exported `notifyNewResource` helper in `lib/db/queries/notifications.ts` for reviewer/FE. | Info |
+| 2026-10-19 | **BE-11.2 backend test cases:** 50 backend test cases created in `docs/test_cases_backend.md`. FE to merge into `docs/test_cases.md`. | Open |
