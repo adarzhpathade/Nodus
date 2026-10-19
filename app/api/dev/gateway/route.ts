@@ -16,7 +16,9 @@ const Body = z.object({
 
 export async function POST(request: Request) {
   await connection();
-  if (process.env.NODE_ENV === "production") return new Response("Not found", { status: 404 });
+  if (process.env.NODE_ENV === "production") {
+    return errorResponse({ code: "NOT_FOUND", message: "Not found." });
+  }
 
   const parsed = Body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return errorResponse(validationError(parsed.error));

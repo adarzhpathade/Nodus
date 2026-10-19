@@ -210,10 +210,10 @@
 
 | ID | Task | Pri | Done when | Status |
 |---|---|---|---|---|
-| BE-10.1 | DB indexes for hot queries (notes by owner/topic, progress, chunks) | P0 | Slow queries fixed | ⬜ |
+| BE-10.1 | DB indexes for hot queries (notes by owner/topic, progress, chunks) | P0 | Slow queries fixed | ✅ Added composite indexes across schema tables for notes, links, attempts, statuses, activities, notifications, resources |
 | BE-10.2 | Caching (`unstable_cache` / tags) for curriculum + dashboard | P1 | Revalidated on writes | ⬜ |
-| BE-10.3 | Security review: guards on every action/route, scope filters, upload validation | P0 | AGENTS.md §14 table holds | ⬜ |
-| BE-10.4 | Error logging + friendly error shapes everywhere | P1 | No raw errors reach UI | ⬜ |
+| BE-10.3 | Security review: guards on every action/route, scope filters, upload validation | P0 | AGENTS.md §14 table holds | ✅ Complete security audit in docs/security_review.md; all guards and scope checks verified & hardened |
+| BE-10.4 | Error logging + friendly error shapes everywhere | P1 | No raw errors reach UI | ✅ Standardized GatewayError/ActionResult/errorResponse everywhere; AI and storage errors sanitized and logged server-side |
 | BE-10.5 | Production seed (demo semester) | P0 | Prod DB looks full | ⬜ |
 
 ---
@@ -255,3 +255,4 @@
 | 2026-10-15 | Real resources API, storage upload (`POST /api/upload`), and ingestion pipeline implemented (BE-4.3 to BE-4.8). FE can test against real resources by removing `resources` from `MOCK_FEATURES` | Info |
 | 2026-10-15 | Real notes API implemented (BE-5.1 to 5.5, 5.7). FE can test against real notes by removing `notes` from `MOCK_FEATURES`. Server actions in `lib/actions/notes.ts` cover all NotesApi methods. Note embeddings (BE-5.6) deferred until Gemini API key is configured. | Info |
 | 2026-10-17 | Real assignments API (BE-8.1 to 8.5) and notifications API (BE-8.6 to 8.7) implemented. FE can test by removing `assignments` and `notifications` from `MOCK_FEATURES`. Server action `getSectionTracker` added to `lib/actions/assignments.ts`. Exported `notifyNewResource` helper in `lib/db/queries/notifications.ts` for reviewer/FE. | Info |
+| 2026-10-19 | Hardening complete (BE-10.1, 10.3, 10.4): security review documented in `docs/security_review.md`, composite DB indexes added, error shapes standardized. DB migrations will be generated on reviewer merge. | Info |

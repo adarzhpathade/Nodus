@@ -40,7 +40,11 @@ export const quizAttempts = pgTable(
     answers: jsonb("answers").notNull(),
     attemptedAt: timestamp("attempted_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("quiz_attempts_student_idx").on(t.studentId, t.attemptedAt), index("quiz_attempts_quiz_idx").on(t.quizId)],
+  (t) => [
+    index("quiz_attempts_student_idx").on(t.studentId, t.attemptedAt),
+    index("quiz_attempts_quiz_idx").on(t.quizId),
+    index("quiz_attempts_student_quiz_idx").on(t.studentId, t.quizId),
+  ],
 );
 
 export const aiConversations = pgTable(
@@ -74,7 +78,11 @@ export const aiMessages = pgTable(
     topicId: uuid("topic_id").references(() => topics.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("ai_messages_conversation_idx").on(t.conversationId, t.createdAt), index("ai_messages_topic_idx").on(t.topicId)],
+  (t) => [
+    index("ai_messages_conversation_idx").on(t.conversationId, t.createdAt),
+    index("ai_messages_topic_idx").on(t.topicId),
+    index("ai_messages_topic_role_idx").on(t.topicId, t.role),
+  ],
 );
 
 /** Cached Analyze Note output; recomputed only when the note's content hash changes. */

@@ -143,15 +143,20 @@ export const resourcesApi: ResourcesApi = {
 
     const files = getStorage();
     const expiresIn = 600; // ~10 minutes
-    const url = await files.url(found.resource.storageKey, {
-      expiresIn,
-      responseContentDisposition: `inline; filename="${encodeURIComponent(found.resource.fileName)}"`,
-    });
+    try {
+      const url = await files.url(found.resource.storageKey, {
+        expiresIn,
+        responseContentDisposition: `inline; filename="${encodeURIComponent(found.resource.fileName)}"`,
+      });
 
-    return {
-      url,
-      expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
-    };
+      return {
+        url,
+        expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
+      };
+    } catch (err) {
+      console.error("[nodus] presigned url generation failed:", err);
+      throw new GatewayError("INTERNAL", "Could not generate file access link. Please try again.");
+    }
   },
 
   async uploadResource(input: UploadResourceInput): Promise<Resource> {
@@ -184,7 +189,12 @@ export const resourcesApi: ResourcesApi = {
     const storageKey = `resources/${input.unitId}/${randomUUID()}-${cleanFileName}`;
     const contentType = input.file.type || (resourceType === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 
-    await files.upload(storageKey, buffer, { contentType });
+    try {
+      await files.upload(storageKey, buffer, { contentType });
+    } catch (err) {
+      console.error("[nodus] storage upload failed:", err);
+      throw new GatewayError("INTERNAL", "Failed to upload file to storage. Please try again.");
+    }
 
     const record = await insertResource({
       unitId: input.unitId,

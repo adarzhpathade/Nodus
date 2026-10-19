@@ -2,7 +2,8 @@
 // Fields: file, unitId, visibleSections ("A,B,C").  Response: 201 { resource: Resource } or { error }.
 // Works in both modes: the gateway decides (mock stores nothing; real lands in BE-4.3).
 import { ALLOWED_UPLOAD_MIME_TYPES, MAX_UPLOAD_BYTES, UploadResourceFields } from "@/contracts/resources";
-import { requireFaculty } from "@/lib/auth/guards";
+import { requireFaculty, requireFacultyTeaches } from "@/lib/auth/guards";
+import { findUnitWithSubject } from "@/lib/db/queries/curriculum";
 import { getGateway } from "@/lib/gateway";
 import { errorResponse, toErrorPayload, validationError } from "@/lib/actions/result";
 
@@ -45,6 +46,15 @@ export async function POST(request: Request) {
       .filter(Boolean),
   });
   if (!fields.success) return errorResponse(validationError(fields.error));
+
+  const unitInfo = await findUnitWithSubject(fields.data.unitId);
+  if (!unitInfo) return errorResponse({ code: "NOT_FOUND", message: "Unit not found." });
+
+  try {
+    await requireFacultyTeaches(unitInfo.subject.id);
+  } catch (error) {
+    return errorResponse(toErrorPayload(error));
+  }
 
   try {
     const resource = await getGateway().resources.uploadResource({ ...fields.data, file });

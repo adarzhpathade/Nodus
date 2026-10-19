@@ -83,22 +83,26 @@ export async function POST(request: Request) {
       assertSemesterOpen(student, scope.semesterNumber);
     } else if (scope.type === "subject") {
       const [subj] = await getDb()
-        .select({ semesterNumber: semesters.number })
+        .select({ semesterNumber: semesters.number, branchId: semesters.branchId })
         .from(subjects)
         .innerJoin(semesters, eq(semesters.id, subjects.semesterId))
         .where(eq(subjects.id, scope.subjectId))
         .limit(1);
-      if (!subj) return errorResponse({ code: "NOT_FOUND", message: "Subject not found." });
+      if (!subj || subj.branchId !== student.profile.branch.id) {
+        return errorResponse({ code: "NOT_FOUND", message: "Subject not found." });
+      }
       assertSemesterOpen(student, subj.semesterNumber);
     } else if (scope.type === "unit") {
       const [u] = await getDb()
-        .select({ semesterNumber: semesters.number })
+        .select({ semesterNumber: semesters.number, branchId: semesters.branchId })
         .from(units)
         .innerJoin(subjects, eq(subjects.id, units.subjectId))
         .innerJoin(semesters, eq(semesters.id, subjects.semesterId))
         .where(eq(units.id, scope.unitId))
         .limit(1);
-      if (!u) return errorResponse({ code: "NOT_FOUND", message: "Unit not found." });
+      if (!u || u.branchId !== student.profile.branch.id) {
+        return errorResponse({ code: "NOT_FOUND", message: "Unit not found." });
+      }
       assertSemesterOpen(student, u.semesterNumber);
     }
   } catch (err) {

@@ -87,5 +87,6 @@ export function mapAiError(error: unknown): GatewayError {
     });
   }
 
-  return new GatewayError("AI_UNAVAILABLE", `AI service error: ${msg}`);
+  console.error("[nodus] AI provider error:", error);
+  return new GatewayError("AI_UNAVAILABLE", "AI service is temporarily unavailable. Please try again.");
 }

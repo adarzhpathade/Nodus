@@ -1,6 +1,7 @@
 // User, profile and teaching queries. Owner: BE.
 import "server-only";
 import { and, asc, eq } from "drizzle-orm";
+import { GatewayError } from "@/contracts/common";
 import { getDb } from "@/lib/db";
 import { branches, facultyTeaching, semesters, studentProfiles, subjects, users } from "@/lib/db/schema";
 
@@ -26,13 +27,13 @@ export async function ensureUser(input: { id: string; email: string; name: strin
     .values({ id: input.id, email: input.email, name: input.name || input.email.split("@")[0] || "Student", image: input.image })
     .onConflictDoNothing({ target: users.id });
   const [row] = await db.select().from(users).where(eq(users.id, input.id)).limit(1);
-  if (!row) throw new Error(`User ${input.id} could not be created`);
+  if (!row) throw new GatewayError("INTERNAL", "User account could not be created.");
   return row;
 }
 
 export async function updateUserName(userId: string, name: string): Promise<UserRow> {
   const [row] = await getDb().update(users).set({ name }).where(eq(users.id, userId)).returning();
-  if (!row) throw new Error(`User ${userId} not found`);
+  if (!row) throw new GatewayError("NOT_FOUND", "User not found.");
   return row;
 }
 

@@ -15,6 +15,13 @@
       "when": 1792032218952,
       "tag": "0001_core-schema",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792401017566,
+      "tag": "0002_charming_ultimates",
+      "breakpoints": true
     }
   ]
 }

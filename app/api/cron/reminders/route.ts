@@ -2,7 +2,7 @@
 // Called by Vercel Cron with `Authorization: Bearer ${CRON_SECRET}`. Real logic lands in BE-8.7.
 import { connection } from "next/server";
 import { isMocked } from "@/lib/gateway";
-import { errorResponse } from "@/lib/actions/result";
+import { errorResponse, toErrorPayload } from "@/lib/actions/result";
 import { createDeadlineReminders } from "@/lib/db/queries/notifications";
 
 export async function GET(request: Request) {
@@ -14,6 +14,11 @@ export async function GET(request: Request) {
 
   if (isMocked("notifications")) return Response.json({ ok: true, mocked: true, created: 0 });
 
-  const result = await createDeadlineReminders();
-  return Response.json({ ok: true, created: result.created });
+  try {
+    const result = await createDeadlineReminders();
+    return Response.json({ ok: true, created: result.created });
+  } catch (error) {
+    console.error("[nodus] cron reminders failed:", error);
+    return errorResponse(toErrorPayload(error));
+  }
 }
