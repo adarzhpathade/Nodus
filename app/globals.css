@@ -520,3 +520,43 @@
   background-image: repeating-linear-gradient(to bottom, var(--border) 0 1px, transparent 1px 8px);
   width: 10px;
 }
+
+/* Display headline: BT Grotesk SemiBold, uppercase, tight tracking and leading */
+@utility text-display {
+  font-family: var(--font-grotesk), var(--font-sans), sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+/* Small mono label: Geist Mono Medium, uppercase, 12px, tracking +0.04em */
+@utility text-label {
+  font-family: var(--font-geist-mono), var(--font-mono), monospace;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+}
+
+/* Bordered cell on the grid */
+@utility cell {
+  border: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+/* Dashed hairline divider */
+@utility divider-dashed {
+  border-style: dashed;
+  border-color: var(--border);
+}
+
+/* Architectural blueprint grid */
+@utility bg-blueprint {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--border) 35%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--border) 35%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+

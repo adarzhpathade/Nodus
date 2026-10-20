@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
 import { getGateway } from "@/lib/gateway";
-import { NoteEditorSkeleton } from "@/components/editor/NoteEditor";
+import { NoteEditor } from "@/components/editor/NoteEditor";
 import { PageBody } from "@/components/layout/PageBody";
-
-// Lazy-load the Tiptap editor client component (dynamic import)
-const NoteEditor = dynamic(() => import("@/components/editor/NoteEditor").then((mod) => mod.NoteEditor), {
-  ssr: false,
-  loading: () => <NoteEditorSkeleton />,
-});
 
 interface NotePageProps {
   params: Promise<{ noteId: string }>;

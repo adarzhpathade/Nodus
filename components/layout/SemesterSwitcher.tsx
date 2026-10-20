@@ -52,7 +52,7 @@ export function SemesterSwitcher({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 gap-1.5 px-2.5 text-xs font-medium"
+              className="text-label h-8 gap-2 border-border px-3 hover:bg-muted"
               disabled={isPending}
               aria-label={`Select semester, current is Semester ${selectedSemester}`}
             />
@@ -61,12 +61,19 @@ export function SemesterSwitcher({
           {isPending ? (
             <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
           ) : (
-            <span>Sem {selectedSemester}</span>
+            <span className="flex items-center gap-1">
+              <span className="text-muted-foreground font-mono">SEM</span>
+              <span className="font-mono text-foreground font-semibold">
+                {selectedSemester < 10 ? `0${selectedSemester}` : selectedSemester}
+              </span>
+            </span>
           )}
-          <ChevronDown className="size-3.5 text-muted-foreground" />
+          <ChevronDown className="size-3 text-muted-foreground" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuLabel>Semesters</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-52">
+          <DropdownMenuLabel className="text-label text-muted-foreground px-2.5 py-1.5">
+            Semesters
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {semesters.map((sem) => (
             <DropdownMenuItem
@@ -75,20 +82,21 @@ export function SemesterSwitcher({
               aria-disabled={sem.locked}
               onClick={() => handleSelect(sem)}
               className={cn(
-                "flex items-center justify-between text-xs",
-                sem.locked && "cursor-not-allowed opacity-50"
+                "text-label flex items-center justify-between px-2.5 py-2 transition-colors cursor-pointer",
+                sem.locked && "cursor-not-allowed opacity-40",
+                sem.number === selectedSemester && "bg-muted/60 text-foreground"
               )}
             >
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <span>Semester {sem.number}</span>
                 {sem.isCurrent && (
-                  <span className="text-[10px] text-muted-foreground">(Current)</span>
+                  <span className="text-signal font-mono text-[10px] tracking-normal">[CURRENT]</span>
                 )}
               </div>
               {sem.locked ? (
                 <Lock className="size-3 text-muted-foreground" aria-label="Locked semester" />
               ) : sem.number === selectedSemester ? (
-                <Check className="size-3.5 text-primary" aria-label="Selected semester" />
+                <Check className="size-3.5 text-signal" aria-label="Selected semester" />
               ) : null}
             </DropdownMenuItem>
           ))}
@@ -98,7 +106,7 @@ export function SemesterSwitcher({
       {error && (
         <span
           role="alert"
-          className="absolute -bottom-5 right-0 whitespace-nowrap text-[10px] font-medium text-destructive"
+          className="text-label text-destructive absolute -bottom-5 right-0 whitespace-nowrap text-[10px]"
         >
           {error}
         </span>

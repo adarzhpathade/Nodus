@@ -82,7 +82,7 @@ export function SubjectSectionSwitcher({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 gap-1.5 px-2.5 text-xs font-medium max-w-[160px] sm:max-w-[200px]"
+              className="text-label h-8 gap-2 border-border px-3 hover:bg-muted max-w-[160px] sm:max-w-[200px]"
               disabled={isPending}
               aria-label="Select teaching subject"
             />
@@ -93,25 +93,27 @@ export function SubjectSectionSwitcher({
           ) : (
             <span className="truncate">{currentAssignment?.subjectName ?? "Select subject"}</span>
           )}
-          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+          <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>Teaches</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-60">
+          <DropdownMenuLabel className="text-label text-muted-foreground px-2.5 py-1.5">
+            Teaches
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {teaches.map((t) => (
             <DropdownMenuItem
               key={t.subjectId}
               onClick={() => handleSubjectChange(t.subjectId)}
-              className="flex items-center justify-between text-xs cursor-pointer"
+              className="flex items-center justify-between px-2.5 py-2 cursor-pointer transition-colors"
             >
-              <div className="flex flex-col">
-                <span className="font-medium">{t.subjectName}</span>
-                <span className="text-[10px] text-muted-foreground">
-                  {t.subjectCode} • Sem {t.semesterNumber}
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium text-foreground">{t.subjectName}</span>
+                <span className="text-label text-muted-foreground font-mono">
+                  {t.subjectCode} · SEM {t.semesterNumber < 10 ? `0${t.semesterNumber}` : t.semesterNumber}
                 </span>
               </div>
               {t.subjectId === selectedSubjectId && (
-                <Check className="size-3.5 text-primary shrink-0 ml-2" />
+                <Check className="size-3.5 text-signal shrink-0 ml-2" />
               )}
             </DropdownMenuItem>
           ))}
@@ -125,27 +127,29 @@ export function SubjectSectionSwitcher({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 gap-1.5 px-2 text-xs font-medium"
+              className="text-label h-8 gap-2 border-border px-2.5 hover:bg-muted"
               disabled={isPending || !currentAssignment}
               aria-label="Select section"
             />
           }
         >
-          <span>Sec {selectedSection}</span>
-          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+          <span className="font-mono">SEC {selectedSection}</span>
+          <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuLabel>Section</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-36">
+          <DropdownMenuLabel className="text-label text-muted-foreground px-2.5 py-1.5">
+            Section
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {currentAssignment?.sections.map((sec) => (
             <DropdownMenuItem
               key={sec}
               onClick={() => handleSectionChange(sec)}
-              className="flex items-center justify-between text-xs cursor-pointer"
+              className="text-label flex items-center justify-between px-2.5 py-2 cursor-pointer transition-colors"
             >
               <span>Section {sec}</span>
               {sec === selectedSection && (
-                <Check className="size-3.5 text-primary shrink-0" />
+                <Check className="size-3.5 text-signal shrink-0" />
               )}
             </DropdownMenuItem>
           ))}
@@ -155,7 +159,7 @@ export function SubjectSectionSwitcher({
       {error && (
         <span
           role="alert"
-          className="absolute -bottom-5 right-0 whitespace-nowrap text-[10px] font-medium text-destructive"
+          className="text-label text-destructive absolute -bottom-5 right-0 whitespace-nowrap text-[10px]"
         >
           {error}
         </span>

@@ -156,13 +156,13 @@ export function QuickSwitcher() {
         </div>
 
         {/* Results */}
-        <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+        <div className="max-h-80 overflow-y-auto p-1">
           {!query.trim() ? (
-            <div className="py-8 text-center text-xs text-muted-foreground">
+            <div className="text-label py-10 text-center text-muted-foreground">
               Type to quickly jump to any note, topic, unit, or subject in your syllabus.
             </div>
           ) : results.length === 0 && !loading ? (
-            <div className="py-8 text-center text-xs text-muted-foreground">
+            <div className="text-label py-10 text-center text-muted-foreground">
               No results found for &quot;{query}&quot;.
             </div>
           ) : (
@@ -175,26 +175,26 @@ export function QuickSwitcher() {
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={cn(
-                    "w-full flex items-center gap-3 rounded-lg px-3 py-2 text-left text-xs transition-colors",
+                    "w-full flex items-center gap-3 rounded-none border-b border-border/30 px-3 py-2.5 text-left text-xs transition-colors cursor-pointer",
                     isSelected
-                      ? "bg-accent text-accent-foreground font-medium"
-                      : "hover:bg-muted/50 text-foreground"
+                      ? "bg-muted text-foreground font-medium border-l-2 border-l-signal pl-2.5"
+                      : "hover:bg-muted/60 text-foreground"
                   )}
                 >
-                  <div className="size-7 rounded-md bg-muted flex items-center justify-center shrink-0">
+                  <div className="size-7 rounded-none border border-border bg-background flex items-center justify-center shrink-0">
                     {renderIcon(item.type)}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="font-medium text-foreground truncate">{item.title}</div>
-                    <div className="text-[11px] text-muted-foreground truncate">
+                    <div className="text-label text-muted-foreground truncate font-mono text-[11px]">
                       {item.subtitle}
                     </div>
                   </div>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground shrink-0">
+                  <span className="text-label border border-border bg-muted/50 px-1.5 py-0.5 text-muted-foreground shrink-0">
                     {item.type}
                   </span>
                   {isSelected && (
-                    <CornerDownLeft className="size-3 text-muted-foreground shrink-0" />
+                    <CornerDownLeft className="size-3 text-signal shrink-0" />
                   )}
                 </button>
               );
@@ -203,17 +203,17 @@ export function QuickSwitcher() {
         </div>
 
         {/* Footer shortcuts */}
-        <div className="flex items-center justify-between border-t border-border/40 bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
+        <div className="text-label flex items-center justify-between border-t border-border bg-muted/40 px-3 py-2 text-muted-foreground">
           <div className="flex items-center gap-3">
             <span>
-              <kbd className="rounded border bg-background px-1 py-0.5 text-[10px]">↑</kbd>{" "}
-              <kbd className="rounded border bg-background px-1 py-0.5 text-[10px]">↓</kbd> to navigate
+              <kbd className="border border-border bg-background px-1 py-0.5 text-[10px] font-mono">↑</kbd>{" "}
+              <kbd className="border border-border bg-background px-1 py-0.5 text-[10px] font-mono">↓</kbd> to navigate
             </span>
             <span>
-              <kbd className="rounded border bg-background px-1 py-0.5 text-[10px]">Enter</kbd> to open
+              <kbd className="border border-border bg-background px-1 py-0.5 text-[10px] font-mono">Enter</kbd> to open
             </span>
           </div>
-          <kbd className="rounded border bg-background px-1.5 py-0.5 text-[10px]">Esc</kbd>
+          <kbd className="border border-border bg-background px-1.5 py-0.5 text-[10px] font-mono">Esc</kbd>
         </div>
       </DialogContent>
     </Dialog>

@@ -30,9 +30,9 @@ export function FacultyTopNav({ viewer, teaches, selection }: FacultyTopNavProps
         variant="ghost"
         size="icon-sm"
         aria-label="Notifications"
-        className="text-muted-foreground hover:text-foreground"
+        className="border-border text-muted-foreground hover:text-foreground relative border"
       >
-        <Bell className="size-4" />
+        <Bell className="size-3.5" />
       </Button>
 
       <UserMenu viewer={viewer} profileHref="/faculty/profile" />

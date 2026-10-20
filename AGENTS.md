@@ -194,6 +194,7 @@ At the start of a session, determine whether you are the **Backend agent** or th
 5. **Update docs** you own if a schema, flow, route or rule changed.
 6. **Update your roadmap file only** — tick the task, set its status. Never edit the other role's roadmap.
 7. **Report** — what changed, which files, anything assumed, and any **requests for the other role**.
+8. **Write the change file** (see §5.5) before ending the session.
 
 ### 5.3 How BE and FE work in parallel (contract-first + mocks)
 
@@ -234,7 +235,27 @@ At the start of a session, determine whether you are the **Backend agent** or th
   git worktree add ../nodus-fe fe/<branch>
   ```
 
-### 5.5 When unsure
+### 5.5 Change file (mandatory at the end of every session)
+Any agent or tool (Antigravity, Claude Code, Codex, ...) that changes files must, **before ending the session**, write one change file:
+
+- Path: `docs/changes/YYYY-MM-DD-<short-slug>.md`, one per session (if the name exists, add a suffix `-2`). Skip only if the session changed no files.
+- Format:
+  ```
+  # <one-line title>
+  - Date / tool / branch:
+  ## What changed
+  - <file path> - what and why (UI tweaks: component, property, old value -> new value)
+  ## Design decisions
+  - tokens added or changed (name, value), spacing, typography, motion changes
+  ## Not done / follow-ups
+  - ...
+  ## Needs attention from the other role
+  - contract, mock or backend requests (or "none")
+  ```
+- List every file touched, including small style edits. Do not paste large diffs.
+- The orchestrator reads `docs/changes/` to learn what was changed outside its own workers. Never edit another session's change file.
+
+### 5.6 When unsure
 - **Design questions** → ask the user (do not invent a style).
 - **Scope questions** (new feature, new library, new table) → ask the user.
 - **Small implementation details** → choose the simplest sensible option and mention it.
@@ -748,6 +769,7 @@ The demo must look full and realistic. `npm run db:seed` should create:
 - ✅ Use the motion libraries to make every interaction feel polished.
 - ✅ Keep progress logic in `lib/progress/` and AI config in `lib/ai/config.ts`.
 - ✅ Update `docs/` when schema, flows, routes or rules change.
+- ✅ Write `docs/changes/<date>-<slug>.md` at the end of every session that changed files (§5.5).
 - ✅ Add loading, empty and error states.
 - ✅ Keep code explainable for the viva.
 
@@ -797,5 +819,9 @@ Read the related doc before working on an area. Create or update it if missing.
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+## Worker rules
+- Never ask questions. Log assumptions in NOTES.md and finish the task.
+- Work only inside your own worktree and your allowed folders.
 
 <!-- END:nextjs-agent-rules -->

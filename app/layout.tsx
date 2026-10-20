@@ -41,21 +41,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
-        {/* Paper grain. The reference paper only varies by 1-2 levels around #F5F5EF, so the grain must blend
-            (soft-light keeps the base colour; multiply would darken it). A fixed overlay is its own stacking
-            context, so the blend goes on the ROOT via style; the inner grain layer stays "normal". fps 0 = still. */}
+      <body className="bg-background text-foreground relative flex min-h-full flex-col">
+        {/* Paper grain background placed behind all UI elements */}
         <Noise
           fixed
-          zIndex={60}
-          opacity={0.5}
+          zIndex={0}
+          opacity={0.45}
           size={1}
           fps={0}
           blendMode="normal"
-          contrast={0.4}
+          contrast={0.35}
           style={{ mixBlendMode: "soft-light" }}
         />
+        <div className="relative z-1 flex min-h-full flex-1 flex-col">
+          <Providers>{children}</Providers>
+        </div>
       </body>
     </html>
   );
